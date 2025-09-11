@@ -1,13 +1,11 @@
 import { User as AuthUser, Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { User as Profile } from "../types/user"; // Pastikan path ini benar
-import { supabase } from "../utils/supabase";   // Pastikan path ini benar
+import { User as Profile } from "../types/user"; 
+import { supabase } from "../utils/supabase";   
 
-// Tipe data profesi untuk profil pengguna
 export type Profesi = "zookeeper" | "supervisor" | "dokter";
 
-// Tipe data untuk argumen fungsi signUp
 interface SignUpArgs {
   email: string;
   password: string;
@@ -16,13 +14,11 @@ interface SignUpArgs {
   profesi: Profesi;
 }
 
-// Tipe data untuk argumen fungsi signIn
 interface SignInArgs {
   email: string;
   password: string;
 }
 
-// Tipe data untuk context yang akan disediakan
 interface AuthContextType {
   session: Session | null;
   user: AuthUser | null;
@@ -33,10 +29,8 @@ interface AuthContextType {
   signOut: () => Promise<any>;
 }
 
-// Membuat context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Membuat komponen Provider
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -44,7 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fungsi untuk mendapatkan sesi awal saat aplikasi pertama kali dimuat
     const fetchInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
@@ -83,13 +76,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
-    // Unsubscribe dari listener saat komponen di-unmount
     return () => {
       authListener.subscription.unsubscribe();
     };
   }, []);
 
-  // Fungsi untuk mendaftarkan pengguna baru
   const signUp = async ({
     email,
     password,
@@ -97,11 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     tanggal_lahir,
     profesi,
   }: SignUpArgs) => {
-    // Membuat URL redirect yang benar untuk development (exp://) dan produksi (zoomate://)
     const redirectTo = Linking.createURL("/login");
     console.log("Redirect URL for email:", redirectTo);
 
-    // Mendaftarkan pengguna di Supabase Auth
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -114,7 +103,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
 
-    // Jika user berhasil dibuat, masukkan data profil ke tabel 'user'
     if (data.user) {
       const { error: profileError } = await supabase.from("user").insert({
         id: data.user.id,
