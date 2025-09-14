@@ -1,34 +1,51 @@
-import { FontAwesome } from "@expo/vector-icons";
+import CenterTabButton from "@/components/ui/CenterTabButton";
+import colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
-export default function TabLayout() {
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "blue",
         headerShown: false,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: colors.yellow.darker,
+        tabBarInactiveTintColor: colors.grayText,
+        tabBarStyle: {
+          backgroundColor: colors.yellow.normal,
+          borderTopWidth: 0,
+          height: 78,
+          paddingTop: 6,
+          paddingBottom: Platform.OS === "ios" ? 20 : 10,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          title: "Beranda",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="scanqr"
         options={{
-          title: "Explore",
+          title: "Scan QR",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="compass" color={color} />
+            <MaterialIcons name="qr-code" size={22} color={color} />
+          ),
+          tabBarButton: (props) => <CenterTabButton {...props} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profil",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="person" size={24} color={color} />
           ),
         }}
       />

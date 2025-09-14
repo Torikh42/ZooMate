@@ -12,6 +12,8 @@ interface SignUpArgs {
   full_name: string;
   tanggal_lahir: string;
   profesi: Profesi;
+  phone_number: string;
+  address: string;
 }
 
 interface SignInArgs {
@@ -87,6 +89,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     full_name,
     tanggal_lahir,
     profesi,
+    phone_number,
+    address,
   }: SignUpArgs) => {
     const redirectTo = Linking.createURL("/login");
     console.log("Redirect URL for email:", redirectTo);
@@ -110,6 +114,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         tanggal_lahir,
         profesi,
         email,
+        phone_number, 
+        address
       });
 
       if (profileError) {

@@ -4,5 +4,8 @@ export type User = {
     created_at?: string;
     id?: string;
     password?: string;
-    profesi? : string
+    profesi? : string;
+    phone_number?: string;
+    address?: string;
+    profile_image_url?: string;
 }

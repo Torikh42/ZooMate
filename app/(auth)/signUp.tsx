@@ -8,8 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from "react-native";
 import { Profesi, useAuth } from "../../context/AuthContext";
+import colors from "../../constants/Colors";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const profesiOptions: Profesi[] = ["zookeeper", "supervisor", "dokter"];
 
@@ -17,7 +20,10 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [tanggalLahir, setTanggalLahir] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [profesi, setProfesi] = useState<Profesi | null>(null);
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -25,7 +31,7 @@ export default function SignUp() {
   const { signUp } = useAuth();
 
   const handleSignUp = async () => {
-    if (!email || !password || !fullName || !tanggalLahir || !profesi) {
+    if (!email || !password || !fullName || !date || !profesi || !phoneNumber || !address) {
       Alert.alert("Error", "Harap isi semua kolom.");
       return;
     }
@@ -40,8 +46,10 @@ export default function SignUp() {
         email,
         password,
         full_name: fullName,
-        tanggal_lahir: tanggalLahir,
+        tanggal_lahir: date.toISOString().split('T')[0],
         profesi: profesi,
+        phone_number: phoneNumber,
+        address: address,
       });
 
       if (error) {
@@ -60,15 +68,22 @@ export default function SignUp() {
     }
   };
 
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1"
+      style={{ backgroundColor: colors.white }}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <View className="p-8">
         <Text
           className="text-4xl font-bold text-center mb-10"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Ayo Daftar Sekarang
         </Text>
@@ -76,15 +91,18 @@ export default function SignUp() {
         {/* --- Form Inputs --- */}
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Email
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-4 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           placeholder="Ex: user@mail.com"
-          placeholderTextColor="#B8AE49"
+          placeholderTextColor={colors.yellow.dark}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -93,45 +111,104 @@ export default function SignUp() {
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Nama Lengkap
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-4 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           placeholder="Ex: Budi Santoso"
-          placeholderTextColor="#B8AE49"
+          placeholderTextColor={colors.yellow.dark}
           value={fullName}
           onChangeText={setFullName}
         />
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
-          Tanggal Lahir
+          Nomor Telepon
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-4 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
-          placeholder="Ex: 2000-01-30"
-          placeholderTextColor="#B8AE49"
-          value={tanggalLahir}
-          onChangeText={setTanggalLahir}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
+          placeholder="Ex: 081234567890"
+          placeholderTextColor={colors.yellow.dark}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
         />
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
+        >
+          Alamat
+        </Text>
+        <TextInput
+          className="h-14 rounded-full px-5 text-base mb-4 border-2"
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
+          placeholder="Ex: Jl. Raya No. 123"
+          placeholderTextColor={colors.yellow.dark}
+          value={address}
+          onChangeText={setAddress}
+        />
+
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
+          Tanggal Lahir
+        </Text>
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <TextInput
+            className="h-14 rounded-full px-5 text-base mb-4 border-2"
+            style={{
+              backgroundColor: colors.yellow.normal,
+              borderColor: colors.yellow.dark,
+              color: colors.yellow.darker
+            }}
+            placeholder="YYYY-MM-DD"
+            value={date.toISOString().split('T')[0]}
+            editable={false}
+          />
+        </TouchableOpacity>
+
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={"date"}
+            is24Hour={true}
+            display="default"
+            onChange={onDateChange}
+          />
+        )}
+
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
         >
           Kata Sandi
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-6 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           placeholder="******"
-          placeholderTextColor="#B8AE49"
+          placeholderTextColor={colors.yellow.dark}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -139,7 +216,7 @@ export default function SignUp() {
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Profesi
         </Text>
@@ -149,12 +226,12 @@ export default function SignUp() {
               key={option}
               className={`py-3 px-5 rounded-full border`}
               style={{
-                borderColor: "#73642D",
-                backgroundColor: profesi === option ? "#FFF58A" : "transparent",
+                borderColor: colors.yellow.darker,
+                backgroundColor: profesi === option ? colors.yellow.normal : "transparent",
               }}
               onPress={() => setProfesi(option)}
             >
-              <Text style={{ color: "#73642D" }}>
+              <Text style={{ color: colors.yellow.darker }}>
                 {option.charAt(0).toUpperCase() + option.slice(1)}
               </Text>
             </Pressable>
@@ -162,26 +239,26 @@ export default function SignUp() {
         </View>
 
         {/* --- Syarat & Ketentuan (Custom Checkbox) --- */}
-        <TouchableOpacity 
+        <TouchableOpacity
           className="flex-row items-start mb-8"
           onPress={() => setAgree(!agree)}
           activeOpacity={0.7}
         >
-          <View 
+          <View
             className="w-6 h-6 border-2 rounded mr-3 items-center justify-center"
-            style={{ 
-              borderColor: "#73642D",
-              backgroundColor: agree ? "#FFF58A" : "transparent"
+            style={{
+              borderColor: colors.yellow.darker,
+              backgroundColor: agree ? colors.yellow.normal : "transparent",
             }}
           >
             {agree && (
-              <Text style={{ color: "#73642D", fontSize: 16, fontWeight: "bold" }}>
+              <Text style={{ color: colors.yellow.darker, fontSize: 16, fontWeight: "bold" }}>
                 ✓
               </Text>
             )}
           </View>
           <View className="flex-1">
-            <Text style={{ color: "#73642D", fontSize: 14, lineHeight: 20 }}>
+            <Text style={{ color: colors.yellow.darker, fontSize: 14, lineHeight: 20 }}>
               Dengan ini saya menyatakan setuju terhadap seluruh syarat,
               ketentuan, dan kebijakan yang ditetapkan oleh aplikasi.
             </Text>
@@ -190,20 +267,23 @@ export default function SignUp() {
 
         <TouchableOpacity
           className="p-4 rounded-full items-center border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           onPress={handleSignUp}
           disabled={loading}
         >
-          <Text className="text-lg font-bold" style={{ color: "#73642D" }}>
+          <Text className="text-lg font-bold" style={{ color: colors.yellow.darker }}>
             {loading ? "Mendaftar..." : "Daftar"}
           </Text>
         </TouchableOpacity>
 
         {/* --- Link ke Login --- */}
         <View className="flex-row justify-center mt-6">
-          <Text style={{ color: "#8A7F4D" }}>Sudah punya akun? </Text>
+          <Text style={{ color: colors.grayText }}>Sudah punya akun? </Text>
           <Link href="/login">
-            <Text style={{ color: "#73642D", fontWeight: "bold" }}>Masuk</Text>
+            <Text style={{ color: colors.yellow.darker, fontWeight: "bold" }}>Masuk</Text>
           </Link>
         </View>
       </View>

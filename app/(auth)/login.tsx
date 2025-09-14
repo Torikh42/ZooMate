@@ -1,3 +1,4 @@
+
 import { Link } from "expo-router";
 import { useState } from "react";
 import {
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../../context/AuthContext";
+import colors from "../../constants/Colors";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,28 +41,32 @@ export default function Login() {
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1"
+      style={{ backgroundColor: colors.white }}
       contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
     >
       <View className="p-8">
         <Text
           className="text-4xl font-bold text-center mb-10"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Selamat Datang
         </Text>
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Email
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-4 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           placeholder="Ex: user@mail.com"
-          placeholderTextColor="#B8AE49"
+          placeholderTextColor={colors.yellow.dark}
           value={email}
           onChangeText={setEmail}
           autoCapitalize="none"
@@ -69,15 +75,18 @@ export default function Login() {
 
         <Text
           className="text-lg font-semibold mb-2"
-          style={{ color: "#73642D" }}
+          style={{ color: colors.yellow.darker }}
         >
           Kata Sandi
         </Text>
         <TextInput
           className="h-14 rounded-full px-5 text-base mb-6 border-2"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           placeholder="******"
-          placeholderTextColor="#B8AE49"
+          placeholderTextColor={colors.yellow.dark}
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -85,19 +94,27 @@ export default function Login() {
 
         <TouchableOpacity
           className="px-16 py-3 rounded-full items-center border-2 self-center"
-          style={{ backgroundColor: "#FFF58A" }}
+          style={{
+            backgroundColor: colors.yellow.normal,
+            borderColor: colors.yellow.dark,
+          }}
           onPress={handleLogin}
           disabled={loading}
         >
-          <Text className="text-lg font-bold" style={{ color: "#73642D" }}>
+          <Text
+            className="text-lg font-bold"
+            style={{ color: colors.yellow.darker }}
+          >
             {loading ? "Masuk..." : "Masuk"}
           </Text>
         </TouchableOpacity>
 
         <View className="flex-row justify-center mt-6">
-          <Text style={{ color: "#8A7F4D" }}>Belum punya akun? </Text>
+          <Text style={{ color: colors.grayText }}>Belum punya akun? </Text>
           <Link href="/signUp">
-            <Text style={{ color: "#73642D", fontWeight: "bold" }}>Daftar</Text>
+            <Text style={{ color: colors.yellow.darker, fontWeight: "bold" }}>
+              Daftar
+            </Text>
           </Link>
         </View>
       </View>
