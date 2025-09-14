@@ -1,30 +1,31 @@
+import HeaderTop from "@/components/ui/HeaderTop";
+import colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   Image,
   ScrollView,
-  TouchableOpacity,
+  Text,
   TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import colors from "@/constants/Colors";
-import { useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
-import HeaderTop from "@/components/ui/HeaderTop";
 
 export default function EditAnimalDetail() {
   const router = useRouter();
-  const [imageUri, setImageUri] = useState(require("@/assets/images/hewan.png"));
+  const [imageUri, setImageUri] = useState(
+    require("@/assets/images/hewan.png")
+  );
   const [editingField, setEditingField] = useState<string | null>(null);
   const [formData, setFormData] = useState<Record<string, string>>({
     "ID Satwa": "SAT - 001",
     "Nama Satwa": "Bimo",
-    "Spesies": "Harimau Sumatera",
+    Spesies: "Harimau Sumatera",
     "Jenis Kelamin": "Jantan",
     "Tanggal Lahir": "12 Mei 2018",
-    "Umur": "6 Tahun",
+    Umur: "6 Tahun",
     "Berat Badan": "120 kg",
     "Tinggi Badan": "95 cm",
     "Jenis Makanan": "Daging sapi, ayam",
@@ -51,12 +52,12 @@ export default function EditAnimalDetail() {
   };
 
   const renderEditableRow = (label: string) => (
-    <View key={label} style={styles.dataBox}>
-      <View style={styles.row}>
-        <Text style={styles.label}>{label}</Text>
+    <View key={label} className="bg-yellow-200 rounded-lg py-2 px-3 mb-2">
+      <View className="flex-row justify-between items-center">
+        <Text className="text-sm font-semibold text-gray-800 shrink">{label}</Text>
         {editingField === label ? (
           <TextInput
-            style={styles.input}
+            className="border-b border-gray-400 text-sm py-1 px-2 min-w-32 text-right flex-1 ml-3"
             value={formData[label]}
             onChangeText={(text) =>
               setFormData((prev) => ({ ...prev, [label]: text }))
@@ -65,10 +66,10 @@ export default function EditAnimalDetail() {
             autoFocus
           />
         ) : (
-          <View style={styles.valueRow}>
-            <Text style={styles.value}>{formData[label]}</Text>
+          <View className="flex-row items-center flex-1 justify-end gap-2 flex-wrap">
+            <Text className="text-sm text-gray-900 text-right flex-1 ml-3">{formData[label]}</Text>
             <TouchableOpacity onPress={() => setEditingField(label)}>
-              <MaterialIcons name="edit" size={20} color="#333" />
+              <MaterialIcons name="edit" size={20} color={colors.darkBrown} />
             </TouchableOpacity>
           </View>
         )}
@@ -78,19 +79,22 @@ export default function EditAnimalDetail() {
 
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      style={styles.container}
+      className="flex-1 bg-white mt-5"
+      contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
     >
       <HeaderTop title="Edit Satwa" />
-      <View style={styles.imageWrapper}>
-        <Image source={imageUri} style={styles.image} resizeMode="cover" />
-        <TouchableOpacity style={styles.editImageIcon} onPress={handleImagePick}>
-          <MaterialIcons name="edit" size={22} color="#fff" />
+      <View className="relative mb-5">
+        <Image source={imageUri} className="w-full h-56 rounded-xl" resizeMode="cover" />
+        <TouchableOpacity
+          className="absolute bottom-3 right-3 bg-yellow-800 p-1 rounded-full"
+          onPress={handleImagePick}
+        >
+          <MaterialIcons name="edit" size={22} color={colors.white} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data Lengkap Satwa</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Data Lengkap Satwa</Text>
         {[
           "ID Satwa",
           "Nama Satwa",
@@ -103,114 +107,21 @@ export default function EditAnimalDetail() {
         ].map(renderEditableRow)}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Catatan Makanan Harian</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Catatan Makanan Harian</Text>
         {["Jenis Makanan", "Porsi Harian", "Pola Makan Hari Ini"].map(
           renderEditableRow
         )}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Riwayat Medis</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Riwayat Medis</Text>
         {["2020-03-11", "2021-08-24"].map(renderEditableRow)}
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>Simpan Perubahan</Text>
+      <TouchableOpacity className="bg-yellow-800 py-3 rounded-lg items-center mt-3" onPress={handleSave}>
+        <Text className="text-white font-bold text-base">Simpan Perubahan</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-    marginTop: 20,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
-  },
-  imageWrapper: {
-    position: "relative",
-    marginBottom: 20,
-  },
-  image: {
-    width: "100%",
-    height: 220,
-    borderRadius: 12,
-  },
-  editImageIcon: {
-    position: "absolute",
-    bottom: 12,
-    right: 12,
-    backgroundColor: colors.yellow.dark,
-    padding: 6,
-    borderRadius: 20,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.yellow.darker,
-    marginBottom: 12,
-  },
-  dataBox: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginBottom: 8,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  valueRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-end",
-    gap: 8,
-    flexWrap: "wrap",
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-    flexShrink: 1,
-  },
-  value: {
-    fontSize: 14,
-    color: "#222",
-    textAlign: "right",
-    flex: 1,
-    marginLeft: 12,
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderColor: "#999",
-    fontSize: 14,
-    paddingVertical: 2,
-    paddingHorizontal: 4,
-    minWidth: 120,
-    textAlign: "right",
-    flex: 1,
-    marginLeft: 12,
-  },
-  button: {
-    backgroundColor: colors.yellow.dark,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});

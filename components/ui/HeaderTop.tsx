@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
@@ -14,36 +14,11 @@ export default function HeaderTop({ title }: Props) {
 
 
   return (
-    <View style={styles.header}>
-      <TouchableOpacity style={styles.backButton} onPress={router.back}>
+    <View className="flex-row items-center mb-4 px-1 pt-4">
+      <TouchableOpacity className="bg-yellow-200 rounded-full p-1 mr-5 shadow" onPress={router.back}>
         <MaterialIcons name="arrow-back-ios-new" size={22} color={colors.yellow.darker} />
       </TouchableOpacity>
-      <Text style={styles.headerText}>{title}</Text>
+      <Text className="font-bold text-xl text-yellow-900">{title}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 18,
-    paddingHorizontal: 4,
-    paddingTop: 16,
-  },
-  backButton: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 999,
-    padding:6,
-    marginRight: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerText: {
-    fontWeight: "700",
-    fontSize: 20,
-    color: colors.yellow.darker,
-  },
-});

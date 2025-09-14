@@ -1,67 +1,32 @@
 import React from "react";
-import { View, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
+import { User as Profile } from "@/types/user";
 
-export default function ProfileHeader() {
+type Props = {
+  profile: Profile | null;
+};
+
+export default function ProfileAvatar({ profile }: Props) {
   return (
-    <View style={styles.wrapper}>
+    <View className="flex-row items-center p-6 mx-3 mb-3 bg-yellow-200 rounded-xl">
       {/* Kiri: Gambar */}
-      <Image source={require("@/assets/images/hewan.png")} style={styles.image} />
+      <Image
+        source={profile?.profile_image_url ? { uri: profile.profile_image_url } : require("../assets/images/hewan.png")}
+        className="w-20 h-20 rounded-full mr-3"
+      />
 
       {/* Tengah: Data */}
-      <View style={styles.infoBox}>
-        <Text style={styles.name}>Indy Agustin</Text>
-        <Text style={styles.email}>indyagustin123@gmail.com</Text>
+      <View className="flex-1 justify-center">
+        <Text className="text-base font-bold text-yellow-900 mb-1">{profile?.full_name || "Nama Pengguna"}</Text>
+        <Text className="text-sm text-gray-500">{profile?.email || "email@example.com"}</Text>
       </View>
 
       {/* Kanan: Tombol Edit */}
-      <TouchableOpacity style={styles.editButton}>
+      <TouchableOpacity className="p-2 rounded-full bg-white shadow ml-2">
         <MaterialIcons name="edit" size={24} color={colors.yellow.darker} />
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 18,
-    padding: 24,
-    marginHorizontal: 14,
-    marginBottom: 12,
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 12,
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 12,
-  },
-  infoBox: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: colors.yellow.darker,
-    marginBottom: 4,
-  },
-  email: {
-    fontSize: 14,
-    color: colors.grayText,
-  },
-  editButton: {
-    padding: 8,
-    borderRadius: 999,
-    backgroundColor: "#fff",
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    marginLeft: 8,
-  },
-});

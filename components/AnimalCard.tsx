@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import colors from "../constants/Colors";
 
 type Props = {
@@ -10,46 +10,14 @@ type Props = {
 
 export default function AnimalCard({ name, status, onPress }: Props) {
   return (
-    <View style={styles.card}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.status}>{status}</Text>
+    <View className="bg-yellow-200 rounded-xl p-3 mb-3 flex-row items-center">
+      <View className="flex-1">
+        <Text className="font-bold text-base text-yellow-900 mb-1">{name}</Text>
+        <Text className="text-sm text-gray-500">{status}</Text>
       </View>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text style={styles.buttonText}>Lihat Selengkapnya</Text>
+      <TouchableOpacity className="bg-yellow-900 py-1 px-3 rounded-lg" onPress={onPress}>
+        <Text className="text-white font-semibold text-sm">Lihat Selengkapnya</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 12,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  name: {
-    fontWeight: "700",
-    fontSize: 16,
-    color: colors.yellow.darker,
-    marginBottom: 4,
-  },
-  status: {
-    fontSize: 13,
-    color: colors.grayText,
-  },
-  button: {
-    backgroundColor: colors.yellow.darker,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 13,
-  },
-});

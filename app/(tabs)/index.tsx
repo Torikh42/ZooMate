@@ -1,39 +1,32 @@
-import React from 'react';
-import { View, ScrollView, Text } from 'react-native';
-import Header from '../../components/Header';
-import TodaySchedule from '../../components/TodaySchedule';
-import FeatureCard from '../../components/FeatureCard';
-import colors from '../../constants/Colors';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React from "react";
+import { ScrollView, Text, View } from "react-native";
+import FeatureCard from "../../components/FeatureCard";
+import Header from "../../components/Header";
+import TodaySchedule from "../../components/TodaySchedule";
+import colors from "../../constants/Colors";
 
 export default function HomeScreen() {
   const router = useRouter();
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
+    <View className="flex-1 bg-white">
       <Header />
       <ScrollView contentContainerStyle={{ padding: 0 }}>
         <View
-          style={{
-            backgroundColor: colors.white,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            padding: 16,
-            marginTop: -24, 
-          }}
+          className="bg-white rounded-t-3xl p-4 -mt-6"
         >
           <TodaySchedule />
 
           <View
-            style={{
-              marginTop: 24,
-              paddingTop: 16,
-              borderTopWidth: 1,
-              borderTopColor: '#ccc',
-            }}
+            className="mt-6 pt-4 border-t"
+            style={{ borderTopColor: colors.yellow.dark }}
           >
-            <Text style={{ marginBottom: 12, fontSize: 16, fontWeight: '600', color: '#4b4b4b' }}>
+            <Text
+              className="mb-3 font-semibold text-2xl"
+              style={{ color: colors.yellow.darkHover }}
+            >
               Lihat Fitur Lainnya
             </Text>
 
@@ -42,21 +35,21 @@ export default function HomeScreen() {
               description="Cek Kawasan Kebun Binatang Sekarang!"
               bgColor={colors.greenSoft}
               icon={<MaterialIcons name="map" size={22} />}
-              onPress={() => router.push('/zooMap')}
+              onPress={() => router.push("/(untabs)/zooMap")}
             />
             <FeatureCard
               title="Lihat Semua Jadwal"
               description="Lihat Jadwal Kamu Hari Ini"
               bgColor={colors.paleYellow}
               icon={<MaterialIcons name="schedule" size={22} />}
-              onPress={() => router.push('/schedule')}
+              onPress={() => router.push("/(untabs)/schedule")}
             />
             <FeatureCard
               title="Data Satwa"
               description="Cek Data Satwa di Kebun Binatang Kamu"
               bgColor={colors.blueSoft}
               icon={<MaterialIcons name="pets" size={22} />}
-              onPress={() => router.push('/satwaData')}
+              onPress={() => router.push("/(untabs)/satwaData")}
             />
           </View>
         </View>

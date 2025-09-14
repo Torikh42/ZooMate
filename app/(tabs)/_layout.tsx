@@ -1,8 +1,8 @@
-import { Tabs } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Platform } from "react-native";
-import colors from "@/constants/Colors";
 import CenterTabButton from "@/components/ui/CenterTabButton";
+import colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 
 export default function TabsLayout() {
   return (
@@ -11,7 +11,7 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarShowLabel: true,
         tabBarActiveTintColor: colors.yellow.darker,
-        tabBarInactiveTintColor: "#9b9b9b",
+        tabBarInactiveTintColor: colors.grayText,
         tabBarStyle: {
           backgroundColor: colors.yellow.normal,
           borderTopWidth: 0,
@@ -25,14 +25,18 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Beranda",
-          tabBarIcon: ({ color }) => <MaterialIcons name="home" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={24} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
         name="scanqr"
         options={{
           title: "Scan QR",
-          tabBarIcon: ({ color }) => <MaterialIcons name="qr-code" size={22} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="qr-code" size={22} color={color} />
+          ),
           tabBarButton: (props) => <CenterTabButton {...props} />,
         }}
       />
@@ -40,10 +44,11 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }) => <MaterialIcons name="person" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="person" size={24} color={color} />
+          ),
         }}
       />
-      
     </Tabs>
   );
 }

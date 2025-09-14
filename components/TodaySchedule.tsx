@@ -1,88 +1,54 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import colors from '../constants/Colors';
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import colors from "../constants/Colors";
 
 export default function TodaySchedule() {
   const router = useRouter();
   const [checked, setChecked] = useState([false, false, false]);
-  const schedules = ['Cek Kandang Singa', 'Cek Kandang Singa', 'Cek Kandang Singa'];
+  const schedules = [
+    "Cek Kandang Singa",
+    "Cek Kandang Singa",
+    "Cek Kandang Singa",
+  ];
 
   const toggleCheck = (idx: number) => {
-    setChecked(prev =>
-      prev.map((val, i) => (i === idx ? !val : val))
-    );
+    setChecked((prev) => prev.map((val, i) => (i === idx ? !val : val)));
   };
 
   return (
-    <View style={{ marginTop: 20 }}>
-      <Text style={{ fontWeight: '700', color: '#3b3b3b', marginBottom: 8 }}>
-        Cek Jadwal Hari Ini
-      </Text>
+    <View className="mt-5">
+      <Text className="font-bold mb-2 text-2xl" style={{ color: colors.yellow.darkHover }}>Cek Jadwal Hari Ini</Text>
 
       <View
-        style={{
-          backgroundColor: colors.white,
-          borderRadius: 12,
-          padding: 12,
-          borderWidth: 2,
-          borderColor: 'rgba(183, 142, 33, 0.15)',
-        }}
+        className="rounded-xl p-3 border-2"
+        style={{ backgroundColor: colors.yellow.normal, borderColor: "rgba(183, 142, 33, 0.15)" }}
       >
         {schedules.map((t, i) => (
-          <View key={i} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+          <View key={i} className="flex-row items-center mb-2">
             <TouchableOpacity
               onPress={() => toggleCheck(i)}
+              className="w-6 h-6 rounded-md border-2 justify-center items-center mr-2"
               style={{
-                width: 22,
-                height: 24,
-                borderRadius: 6,
-                borderWidth: 2,
                 borderColor: colors.yellow.darkActive,
-                marginRight: 10,
-                backgroundColor: checked[i] ? colors.yellow.darkActive : '#fff',
-                justifyContent: 'center',
-                alignItems: 'center',
+                backgroundColor: checked[i] ? colors.yellow.darkActive : "#fff",
               }}
             >
-              {checked[i] && (
-                <View
-                  style={{
-                    width: 12,
-                    height: 12,
-                    backgroundColor: '#fff',
-                    borderRadius: 3,
-                  }}
-                />
-              )}
+              {checked[i] && <View className="w-3 h-3 bg-white rounded-sm" />}
             </TouchableOpacity>
-            <View
-              style={{
-                flex: 1,
-                height: 22,
-                backgroundColor: colors.yellow.light,
-                borderRadius: 6,
-                justifyContent: 'center',
-                paddingHorizontal: 8,
-              }}
-            >
-              <Text style={{ fontSize: 12, color: '#6b6b6b' }}>{t}</Text>
+            <View style={{ backgroundColor: colors.yellow.lightActive }} className="flex-1 h-6 rounded-md justify-center px-2">
+              <Text className="text-xs text-gray-500">{t}</Text>
             </View>
           </View>
         ))}
 
         <TouchableOpacity
+          style={{ backgroundColor: colors.yellow.darker }}
           activeOpacity={0.9}
-          style={{
-            marginTop: 6,
-            backgroundColor: colors.yellow.darkActive,
-            paddingVertical: 10,
-            borderRadius: 8,
-            alignItems: 'center',
-          }}
-          onPress={() => router.push("../(untabs)/editSchedule")}
+          className="mt-1 py-2 rounded-lg items-center"
+          onPress={() => router.push("/(untabs)/schedule")}
         >
-          <Text style={{ color: '#fff', fontWeight: '700' }}>Cek Jadwal Saya</Text>
+          <Text className="text-white font-bold">Cek Jadwal Saya</Text>
         </TouchableOpacity>
       </View>
     </View>

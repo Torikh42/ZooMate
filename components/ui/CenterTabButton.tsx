@@ -10,39 +10,18 @@ export default function CenterTabButton({ accessibilityState }: any) {
 
   return (
     <TouchableOpacity
-      onPress={() => router.push('/scanqr')}
+      onPress={() => router.push('/(tabs)/scanqr')}
       activeOpacity={0.85}
-      style={{
-        position: 'absolute',
-        bottom: 20,
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className="absolute bottom-5 self-center items-center justify-center"
     >
       <View
-        style={{
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          backgroundColor: colors.white,
-          justifyContent: 'center',
-          alignItems: 'center',
-          shadowColor: '#000',
-          shadowOpacity: 0.15,
-          shadowRadius: 8,
-          elevation: 6,
-        }}
+        className="w-16 h-16 rounded-full bg-white justify-center items-center shadow-lg"
       >
         <MaterialIcons name="qr-code" size={30} color={colors.yellow.darker} />
       </View>
       <Text
-        style={{
-          marginTop: 4,
-          fontSize: 13,
-          fontWeight: '600',
-          color: focused ? colors.yellow.darker : '#9b9b9b',
-        }}
+        className="mt-1 text-sm font-semibold"
+        style={{ color: focused ? colors.yellow.darker : '#9b9b9b' }}
       >
         Scan QR
       </Text>

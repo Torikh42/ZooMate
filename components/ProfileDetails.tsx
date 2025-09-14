@@ -1,55 +1,31 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import colors from "@/constants/Colors";
+import { User as Profile } from "@/types/user";
 
-export default function ProfileDetails() {
+type Props = {
+  profile: Profile | null;
+};
+
+export default function ProfileDetails({ profile }: Props) {
   const data = [
-    { label: "Nama Pengguna: ", value: "Indy Agustin" },
-    { label: "Email: ", value: "indyeye@gmail.com" },
-    { label: "No. Telepon: ", value: "08878876554" },
+    { label: "Nama Pengguna: ", value: profile?.full_name || "-" },
+    { label: "Email: ", value: profile?.email || "-" },
+    { label: "No. Telepon: ", value: profile?.phone_number || "-" },
     {
       label: "Alamat: ",
-      value:
-        "Jalan Gang Haji Ipin No. 1, Pangkalan Jati, Cinere, Kota Depok, Jawa Barat 16514",
+      value: profile?.address || "-",
     },
   ];
 
   return (
-    <View style={styles.wrapper}>
+    <View className="px-4 mb-5 mt-3 space-y-3">
       {data.map((item, index) => (
-        <View key={index} style={styles.row}>
-          <Text style={styles.label}>{item.label}</Text>
-          <Text style={styles.value}>{item.value}</Text>
+        <View key={index} className="flex-row justify-between items-start flex-wrap">
+          <Text className="text-sm text-gray-500 font-medium flex-1">{item.label}</Text>
+          <Text className="text-sm text-gray-800 text-right flex-1 pl-3">{item.value}</Text>
         </View>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrapper: {
-    paddingHorizontal: 18,
-    marginBottom: 20,
-    marginTop: 12,
-    gap: 12,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
-  },
-  label: {
-    fontSize: 14,
-    color: colors.grayText,
-    fontWeight: "500",
-    flex: 1,
-  },
-  value: {
-    fontSize: 14,
-    color: "#222",
-    textAlign: "right",
-    flex: 1,
-    paddingLeft: 12,
-  },
-});

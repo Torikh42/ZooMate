@@ -1,16 +1,15 @@
+import HeaderTop from "@/components/ui/HeaderTop";
+import colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  View,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  StyleSheet,
+  View,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import colors from "@/constants/Colors";
-import { router } from "expo-router";
-import HeaderTop from "@/components/ui/HeaderTop";
 
 const dummyTaskTypes = ["Pakan", "Pengecekan", "Medis", "Kebersihan"];
 const dummyCages = ["Harimau", "Gajah", "Rusa", "Burung", "Ular"];
@@ -34,14 +33,16 @@ export default function AddSchedule() {
   const [showTimeDropdown, setShowTimeDropdown] = useState(false);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: colors.white, padding: 18, marginTop: 20 }}>
+    <ScrollView
+      className="flex-1 bg-white p-4 mt-5"
+    >
       {/* Header */}
       <HeaderTop title="Tambah Tugas" />
 
       {/* Nama Tugas */}
-      <Text style={styles.label}>Nama Tugas</Text>
+      <Text className="font-bold text-yellow-900 mb-2 mt-3">Nama Tugas</Text>
       <TextInput
-        style={styles.input}
+        className="bg-yellow-200 rounded-full py-3 px-4 text-base text-gray-500 mb-4"
         placeholder="Ex: Bersihkan Kandang Gajah"
         placeholderTextColor={colors.grayText}
         value={taskName}
@@ -49,156 +50,106 @@ export default function AddSchedule() {
       />
 
       {/* Jenis Tugas Dropdown */}
-      <Text style={styles.label}>Jenis Tugas</Text>
-      <TouchableOpacity style={styles.dropdown} onPress={() => setShowTypeDropdown(!showTypeDropdown)}>
-        <Text style={styles.dropdownText}>{taskType || "Pilih jenis tugas"}</Text>
-        <MaterialIcons name="arrow-drop-down" size={24} color={colors.grayText} />
+      <Text className="font-bold text-yellow-900 mb-2 mt-3">Jenis Tugas</Text>
+      <TouchableOpacity
+        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
+        onPress={() => setShowTypeDropdown(!showTypeDropdown)}
+      >
+        <Text className="text-base text-gray-500">
+          {taskType || "Pilih jenis tugas"}
+        </Text>
+        <MaterialIcons
+          name="arrow-drop-down"
+          size={24}
+          color={colors.grayText}
+        />
       </TouchableOpacity>
       {showTypeDropdown && (
-        <View style={styles.dropdownList}>
+        <View className="mb-2">
           {dummyTaskTypes.map((item) => (
             <TouchableOpacity
               key={item}
-              style={styles.dropdownItem}
+              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
               onPress={() => {
                 setTaskType(item);
                 setShowTypeDropdown(false);
               }}
             >
-              <Text style={styles.dropdownItemText}>{item}</Text>
+              <Text className="text-base text-yellow-900">{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
       )}
 
       {/* Kandang/Satwa Dropdown */}
-      <Text style={styles.label}>Pilih Kandang/Satwa</Text>
-      <TouchableOpacity style={styles.dropdown} onPress={() => setShowCageDropdown(!showCageDropdown)}>
-        <Text style={styles.dropdownText}>{cage || "Pilih kandang/satwa"}</Text>
-        <MaterialIcons name="arrow-drop-down" size={24} color={colors.grayText} />
+      <Text className="font-bold text-yellow-900 mb-2 mt-3">Pilih Kandang/Satwa</Text>
+      <TouchableOpacity
+        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
+        onPress={() => setShowCageDropdown(!showCageDropdown)}
+      >
+        <Text className="text-base text-gray-500">{cage || "Pilih kandang/satwa"}</Text>
+        <MaterialIcons
+          name="arrow-drop-down"
+          size={24}
+          color={colors.grayText}
+        />
       </TouchableOpacity>
       {showCageDropdown && (
-        <View style={styles.dropdownList}>
+        <View className="mb-2">
           {dummyCages.map((item) => (
             <TouchableOpacity
               key={item}
-              style={styles.dropdownItem}
+              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
               onPress={() => {
                 setCage(item);
                 setShowCageDropdown(false);
               }}
             >
-              <Text style={styles.dropdownItemText}>{item}</Text>
+              <Text className="text-base text-yellow-900">{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
       )}
 
       {/* Jam Tugas Dropdown */}
-      <Text style={styles.label}>Jam Tugas</Text>
-      <TouchableOpacity style={styles.dropdown} onPress={() => setShowTimeDropdown(!showTimeDropdown)}>
-        <Text style={styles.dropdownText}>{taskTime || "Pilih rentang waktu"}</Text>
-        <MaterialIcons name="arrow-drop-down" size={24} color={colors.grayText} />
+      <Text className="font-bold text-yellow-900 mb-2 mt-3">Jam Tugas</Text>
+      <TouchableOpacity
+        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
+        onPress={() => setShowTimeDropdown(!showTimeDropdown)}
+      >
+        <Text className="text-base text-gray-500">
+          {taskTime || "Pilih rentang waktu"}
+        </Text>
+        <MaterialIcons
+          name="arrow-drop-down"
+          size={24}
+          color={colors.grayText}
+        />
       </TouchableOpacity>
       {showTimeDropdown && (
-        <View style={styles.dropdownList}>
+        <View className="mb-2">
           {dummyTimeRanges.map((item) => (
             <TouchableOpacity
               key={item}
-              style={styles.dropdownItem}
+              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
               onPress={() => {
                 setTaskTime(item);
                 setShowTimeDropdown(false);
               }}
             >
-              <Text style={styles.dropdownItemText}>{item}</Text>
+              <Text className="text-base text-yellow-900">{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
       )}
 
       {/* Tombol Simpan */}
-      <TouchableOpacity style={styles.saveButton} onPress={() => router.push("../../(tabs)")}>
-        <Text style={styles.saveButtonText}>Simpan Jadwal</Text>
+      <TouchableOpacity
+        className="bg-yellow-900 rounded-lg py-3 items-center mt-6"
+        onPress={() => router.push("../../(tabs)")}
+      >
+        <Text className="text-white font-bold text-base">Simpan Jadwal</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 18,
-  },
-  backButton: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 999,
-    padding: 8,
-    marginRight: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerText: {
-    fontWeight: "700",
-    fontSize: 20,
-    color: colors.yellow.darker,
-  },
-  label: {
-    fontWeight: "700",
-    color: colors.yellow.darker,
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    fontSize: 16,
-    color: colors.grayText,
-    marginBottom: 16,
-  },
-  dropdown: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 999,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  dropdownText: {
-    fontSize: 16,
-    color: colors.grayText,
-  },
-  dropdownList: {
-    marginBottom: 8,
-  },
-  dropdownItem: {
-    backgroundColor: "#fef9c3",
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  dropdownItemText: {
-    fontSize: 16,
-    color: colors.yellow.darker,
-  },
-  saveButton: {
-    backgroundColor: colors.yellow.darker,
-    borderRadius: 8,
-    paddingVertical: 14,
-    alignItems: "center",
-    marginTop: 24,
-  },
-  saveButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
-  },
-});

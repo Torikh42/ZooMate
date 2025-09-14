@@ -1,33 +1,32 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
-import HeaderTop from "@/components/ui/HeaderTop";
+import React from "react";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function AnimalDetail() {
   const router = useRouter();
 
   return (
     <ScrollView
-      contentContainerStyle={styles.scrollContent}
-      style={styles.container}
+      className="flex-1 bg-white mt-5"
+      contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
     >
       <HeaderTop title="Detail Satwa" />
       <Image
         source={require("@/assets/images/hewan.png")}
-        style={styles.image}
+        className="w-full h-56 rounded-xl mb-5"
         resizeMode="cover"
       />
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data Lengkap Satwa</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Data Lengkap Satwa</Text>
         {[
           { label: "ID Satwa", value: "SAT - 001" },
           { label: "Nama Satwa", value: "Bimo" },
@@ -38,116 +37,55 @@ export default function AnimalDetail() {
           { label: "Berat Badan", value: "120 kg" },
           { label: "Tinggi Badan", value: "95 cm" },
         ].map((item) => (
-          <View key={item.label} style={styles.dataBox}>
-            <View style={styles.row}>
-              <Text style={styles.label}>{item.label}</Text>
-              <Text style={styles.value}>{item.value}</Text>
+          <View key={item.label} className="bg-yellow-200 rounded-lg py-2 px-3 mb-2">
+            <View className="flex-row justify-between items-center">
+              <Text className="text-sm font-semibold text-gray-800 shrink">{item.label}</Text>
+              <Text className="text-sm text-gray-900 text-right max-w-1/2">{item.value}</Text>
             </View>
           </View>
         ))}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Catatan Makanan Harian</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Catatan Makanan Harian</Text>
         {[
           { label: "Jenis Makanan", value: "Daging sapi, ayam" },
           { label: "Porsi Harian", value: "8 Kg" },
           { label: "Pola Makan Hari Ini", value: "Baik Sekali" },
         ].map((item) => (
-          <View key={item.label} style={styles.dataBox}>
-            <View style={styles.row}>
-              <Text style={styles.label}>{item.label}</Text>
-              <Text style={styles.value}>{item.value}</Text>
+          <View key={item.label} className="bg-yellow-200 rounded-lg py-2 px-3 mb-2">
+            <View className="flex-row justify-between items-center">
+              <Text className="text-sm font-semibold text-gray-800 shrink">{item.label}</Text>
+              <Text className="text-sm text-gray-900 text-right max-w-1/2">{item.value}</Text>
             </View>
           </View>
         ))}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Riwayat Medis</Text>
+      <View className="mb-6">
+        <Text className="text-lg font-bold text-yellow-900 mb-3">Riwayat Medis</Text>
         {[
           { label: "2020-03-11", value: "Vaksinasi Rabies" },
           { label: "2021-08-24", value: "Operasi kecil" },
         ].map((item) => (
-          <View key={item.label} style={styles.dataBox}>
-            <View style={styles.row}>
-              <Text style={styles.label}>{item.label}</Text>
-              <Text style={styles.value}>{item.value}</Text>
+          <View key={item.label} className="bg-yellow-200 rounded-lg py-2 px-3 mb-2">
+            <View className="flex-row justify-between items-center">
+              <Text className="text-sm font-semibold text-gray-800 shrink">{item.label}</Text>
+              <Text className="text-sm text-gray-900 text-right max-w-1/2">{item.value}</Text>
             </View>
           </View>
         ))}
       </View>
 
       <TouchableOpacity
-        style={styles.button}
+        style={{ backgroundColor: colors.yellow.darker }}
+        className="bg-yellow-800 py-3 rounded-lg items-center mt-3"
         onPress={() => {
           router.push("/editAnimalDetail");
         }}
       >
-        <Text style={styles.buttonText}>Edit Catatan Baru</Text>
+        <Text className="text-white font-bold text-base">Edit Catatan Baru</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-    marginTop:20
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 100, 
-  },
-  image: {
-    width: "100%",
-    height: 220,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: colors.yellow.darker,
-    marginBottom: 12,
-  },
-  dataBox: {
-    backgroundColor: colors.yellow.normal,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    marginBottom: 8,
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#333",
-    flexShrink: 1,
-  },
-  value: {
-    fontSize: 14,
-    color: "#222",
-    textAlign: "right",
-    maxWidth: "50%",
-  },
-  button: {
-    backgroundColor: colors.yellow.dark,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-});
