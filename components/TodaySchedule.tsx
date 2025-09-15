@@ -18,11 +18,19 @@ export default function TodaySchedule() {
 
   return (
     <View className="mt-5">
-      <Text className="font-bold mb-2 text-2xl" style={{ color: colors.yellow.darkHover }}>Cek Jadwal Hari Ini</Text>
+      <Text
+        className="font-bold mb-2 text-2xl"
+        style={{ color: colors.yellow.darkHover }}
+      >
+        Cek Jadwal Hari Ini
+      </Text>
 
       <View
         className="rounded-xl p-3 border-2"
-        style={{ backgroundColor: colors.yellow.normal, borderColor: "rgba(183, 142, 33, 0.15)" }}
+        style={{
+          backgroundColor: colors.yellow.normal,
+          borderColor: "rgba(183, 142, 33, 0.15)",
+        }}
       >
         {schedules.map((t, i) => (
           <View key={i} className="flex-row items-center mb-2">
@@ -36,7 +44,10 @@ export default function TodaySchedule() {
             >
               {checked[i] && <View className="w-3 h-3 bg-white rounded-sm" />}
             </TouchableOpacity>
-            <View style={{ backgroundColor: colors.yellow.lightActive }} className="flex-1 h-6 rounded-md justify-center px-2">
+            <View
+              style={{ backgroundColor: colors.yellow.lightActive }}
+              className="flex-1 h-6 rounded-md justify-center px-2"
+            >
               <Text className="text-xs text-gray-500">{t}</Text>
             </View>
           </View>

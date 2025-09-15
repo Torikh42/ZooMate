@@ -1,10 +1,8 @@
 import { User as AuthUser, Session } from "@supabase/supabase-js";
 import * as Linking from "expo-linking";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { User as Profile } from "../types/user"; 
-import { supabase } from "../utils/supabase";   
-
-export type Profesi = "zookeeper" | "supervisor" | "dokter";
+import { Profile, Profesi } from "../types/user"; 
+import { supabase } from "../utils/supabase";
 
 interface SignUpArgs {
   email: string;

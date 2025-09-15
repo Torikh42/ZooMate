@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import colors from "../constants/Colors";
 
 type Props = {
@@ -15,8 +15,14 @@ export default function AnimalCard({ name, status, onPress }: Props) {
         <Text className="font-bold text-base text-yellow-900 mb-1">{name}</Text>
         <Text className="text-sm text-gray-500">{status}</Text>
       </View>
-      <TouchableOpacity className="bg-yellow-900 py-1 px-3 rounded-lg" onPress={onPress}>
-        <Text className="text-white font-semibold text-sm">Lihat Selengkapnya</Text>
+      <TouchableOpacity
+        className="py-1 px-3 rounded-lg"
+        onPress={onPress}
+        style={{ backgroundColor: colors.yellow.darker }}
+      >
+        <Text className="text-white font-semibold text-sm">
+          Lihat Selengkapnya
+        </Text>
       </TouchableOpacity>
     </View>
   );

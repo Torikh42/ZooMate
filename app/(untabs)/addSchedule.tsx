@@ -33,9 +33,7 @@ export default function AddSchedule() {
   const [showTimeDropdown, setShowTimeDropdown] = useState(false);
 
   return (
-    <ScrollView
-      className="flex-1 bg-white p-4 mt-5"
-    >
+    <ScrollView className="flex-1 bg-white p-4 mt-5">
       {/* Header */}
       <HeaderTop title="Tambah Tugas" />
 
@@ -82,12 +80,16 @@ export default function AddSchedule() {
       )}
 
       {/* Kandang/Satwa Dropdown */}
-      <Text className="font-bold text-yellow-900 mb-2 mt-3">Pilih Kandang/Satwa</Text>
+      <Text className="font-bold text-yellow-900 mb-2 mt-3">
+        Pilih Kandang/Satwa
+      </Text>
       <TouchableOpacity
         className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
         onPress={() => setShowCageDropdown(!showCageDropdown)}
       >
-        <Text className="text-base text-gray-500">{cage || "Pilih kandang/satwa"}</Text>
+        <Text className="text-base text-gray-500">
+          {cage || "Pilih kandang/satwa"}
+        </Text>
         <MaterialIcons
           name="arrow-drop-down"
           size={24}
@@ -145,7 +147,8 @@ export default function AddSchedule() {
 
       {/* Tombol Simpan */}
       <TouchableOpacity
-        className="bg-yellow-900 rounded-lg py-3 items-center mt-6"
+        style={{ backgroundColor: colors.yellow.darker }}
+        className="rounded-lg py-3 items-center mt-6"
         onPress={() => router.push("../../(tabs)")}
       >
         <Text className="text-white font-bold text-base">Simpan Jadwal</Text>

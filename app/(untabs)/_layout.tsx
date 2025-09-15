@@ -13,6 +13,9 @@ export default function UntabsLayout() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="zooMap" options={{ headerShown: false }} />
+      <Stack.Screen name="addKandang" options={{ headerShown: false }} />
+      <Stack.Screen name="animalList" options={{ headerShown: false }} />
+      <Stack.Screen name="addAnimal" options={{ headerShown: false }} />
     </Stack>
   );
 }
