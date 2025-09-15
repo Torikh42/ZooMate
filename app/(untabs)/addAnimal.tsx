@@ -10,10 +10,13 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Image,
 } from "react-native";
 import { supabase } from "../../utils/supabase";
 import { Satwa } from "../../types/satwa";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
+import { uploadImageToCloudinary } from "../../utils/cloudinary";
 
 export default function AddAnimal() {
   const { kandangId, kandangName } = useLocalSearchParams();
@@ -22,12 +25,28 @@ export default function AddAnimal() {
   const [spesies, setSpesies] = useState("");
   const [tanggalLahir, setTanggalLahir] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [jenisKelamin, setJenisKelamin] = useState<"Jantan" | "Betina" | null>(null);
+  const [jenisKelamin, setJenisKelamin] = useState<"Jantan" | "Betina" | null>(
+    null
+  );
   const [beratBadan, setBeratBadan] = useState("");
   const [tinggiBadan, setTinggiBadan] = useState("");
   const [jenisMakanan, setJenisMakanan] = useState("");
   const [porsiHarian, setPorsiHarian] = useState("");
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
 
   const handleAddAnimal = async () => {
     if (!kandangId || !namaSatwa || !spesies || !tanggalLahir || !jenisKelamin) {
@@ -37,16 +56,22 @@ export default function AddAnimal() {
 
     setLoading(true);
     try {
+      let imageUrl = null;
+      if (imageUri) {
+        imageUrl = await uploadImageToCloudinary(imageUri);
+      }
+
       const { error } = await supabase.from("satwa").insert({
         kandang_id: kandangId as string,
         nama_satwa: namaSatwa,
         spesies: spesies,
-        tanggal_lahir: tanggalLahir.toISOString().split('T')[0],
+        tanggal_lahir: tanggalLahir.toISOString().split("T")[0],
         jenis_kelamin: jenisKelamin,
         berat_badan: beratBadan ? parseFloat(beratBadan) : null,
         tinggi_badan: tinggiBadan ? parseFloat(tinggiBadan) : null,
         jenis_makanan: jenisMakanan || null,
         porsi_harian: porsiHarian || null,
+        image_url: imageUrl,
       } as Omit<Satwa, "id" | "created_at">);
 
       if (error) {
@@ -64,7 +89,7 @@ export default function AddAnimal() {
 
   const onDateChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || tanggalLahir;
-    setShowDatePicker(Platform.OS === 'ios');
+    setShowDatePicker(Platform.OS === "ios");
     setTanggalLahir(currentDate);
   };
 
@@ -75,8 +100,29 @@ export default function AddAnimal() {
     >
       <HeaderTop title={`Tambah Satwa di ${kandangName || "Kandang"}`} />
 
+      <View className="items-center mb-4">
+        <TouchableOpacity onPress={pickImage}>
+          {imageUri ? (
+            <Image
+              source={{ uri: imageUri }}
+              className="w-32 h-32 rounded-full"
+            />
+          ) : (
+            <View
+              className="w-32 h-32 rounded-full bg-gray-200 items-center justify-center"
+              style={{ borderColor: colors.yellow.dark, borderWidth: 2 }}
+            >
+              <Text style={{ color: colors.yellow.darker }}>Pilih Gambar</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Nama Satwa
         </Text>
         <TextInput
@@ -93,7 +139,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Spesies
         </Text>
         <TextInput
@@ -110,7 +159,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Tanggal Lahir
         </Text>
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
@@ -119,10 +171,10 @@ export default function AddAnimal() {
             style={{
               backgroundColor: colors.yellow.normal,
               borderColor: colors.yellow.dark,
-              color: colors.yellow.darker
+              color: colors.yellow.darker,
             }}
             placeholder="YYYY-MM-DD"
-            value={tanggalLahir.toISOString().split('T')[0]}
+            value={tanggalLahir.toISOString().split("T")[0]}
             editable={false}
           />
         </TouchableOpacity>
@@ -140,7 +192,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Jenis Kelamin
         </Text>
         <View className="flex-row justify-around mb-4">
@@ -148,7 +203,8 @@ export default function AddAnimal() {
             className={`py-3 px-5 rounded-full border`}
             style={{
               borderColor: colors.yellow.darker,
-              backgroundColor: jenisKelamin === "Jantan" ? colors.yellow.normal : "transparent",
+              backgroundColor:
+                jenisKelamin === "Jantan" ? colors.yellow.normal : "transparent",
             }}
             onPress={() => setJenisKelamin("Jantan")}
           >
@@ -158,7 +214,8 @@ export default function AddAnimal() {
             className={`py-3 px-5 rounded-full border`}
             style={{
               borderColor: colors.yellow.darker,
-              backgroundColor: jenisKelamin === "Betina" ? colors.yellow.normal : "transparent",
+              backgroundColor:
+                jenisKelamin === "Betina" ? colors.yellow.normal : "transparent",
             }}
             onPress={() => setJenisKelamin("Betina")}
           >
@@ -168,7 +225,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Berat Badan (kg)
         </Text>
         <TextInput
@@ -186,7 +246,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Tinggi Badan (cm)
         </Text>
         <TextInput
@@ -204,7 +267,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Jenis Makanan
         </Text>
         <TextInput
@@ -221,7 +287,10 @@ export default function AddAnimal() {
       </View>
 
       <View className="mb-6">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Porsi Harian
         </Text>
         <TextInput

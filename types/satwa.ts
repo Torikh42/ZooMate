@@ -10,4 +10,5 @@ export interface Satwa {
   tinggi_badan?: number | null;
   jenis_makanan?: string | null;
   porsi_harian?: string | null;
+  image_url?: string | null;
 }

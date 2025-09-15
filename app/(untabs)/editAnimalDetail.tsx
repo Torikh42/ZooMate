@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
   Text,
   TextInput,
@@ -15,6 +16,8 @@ import {
 } from "react-native";
 import { useSatwa } from "../../hooks/useSatwa";
 import { supabase } from "../../utils/supabase";
+import * as ImagePicker from "expo-image-picker";
+import { uploadImageToCloudinary } from "../../utils/cloudinary";
 
 export default function EditAnimalDetail() {
   const router = useRouter();
@@ -25,39 +28,72 @@ export default function EditAnimalDetail() {
   const [formData, setFormData] = useState<Partial<Satwa>>({});
   const [editingField, setEditingField] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   useEffect(() => {
     if (singleSatwa) {
       setFormData(singleSatwa);
+      if (singleSatwa.image_url) {
+        setImageUri(singleSatwa.image_url);
+      }
     }
   }, [singleSatwa]);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
 
   const handleSave = async () => {
     if (!satwaId) return;
     setIsSaving(true);
     setEditingField(null);
 
-    const { created_at, id, ...updateData } = formData;
+    try {
+      let imageUrl = formData.image_url;
+      if (imageUri && imageUri !== formData.image_url) {
+        imageUrl = await uploadImageToCloudinary(imageUri);
+      }
 
-    // Konversi field yang seharusnya angka
-    const numericData = {
-      ...updateData,
-      berat_badan: updateData.berat_badan ? parseFloat(String(updateData.berat_badan)) : null,
-      tinggi_badan: updateData.tinggi_badan ? parseFloat(String(updateData.tinggi_badan)) : null,
-    };
+      const { created_at, id, ...updateData } = formData;
 
-    const { error: updateError } = await supabase
-      .from("satwa")
-      .update(numericData)
-      .eq("id", satwaId);
-    
-    setIsSaving(false);
+      const numericData = {
+        ...updateData,
+        berat_badan: updateData.berat_badan
+          ? parseFloat(String(updateData.berat_badan))
+          : null,
+        tinggi_badan: updateData.tinggi_badan
+          ? parseFloat(String(updateData.tinggi_badan))
+          : null,
+        image_url: imageUrl,
+      };
 
-    if (updateError) {
-      Alert.alert("Error", "Gagal menyimpan perubahan: " + updateError.message);
-    } else {
-      Alert.alert("Sukses", "Data satwa berhasil diperbarui.");
-      router.back();
+      const { error: updateError } = await supabase
+        .from("satwa")
+        .update(numericData)
+        .eq("id", satwaId);
+
+      if (updateError) {
+        Alert.alert(
+          "Error",
+          "Gagal menyimpan perubahan: " + updateError.message
+        );
+      } else {
+        Alert.alert("Sukses", "Data satwa berhasil diperbarui.");
+        router.back();
+      }
+    } catch (err: any) {
+      Alert.alert("Error", err.message);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -114,7 +150,25 @@ export default function EditAnimalDetail() {
       contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
     >
       <View className="mt-5">
-        <HeaderTop title={`Edit - ${formData.nama_satwa || 'Satwa'}`} />
+        <HeaderTop title={`Edit - ${formData.nama_satwa || "Satwa"}`} />
+
+        <View className="items-center mb-4">
+          <TouchableOpacity onPress={pickImage}>
+            {imageUri ? (
+              <Image
+                source={{ uri: imageUri }}
+                className="w-32 h-32 rounded-full"
+              />
+            ) : (
+              <View
+                className="w-32 h-32 rounded-full bg-gray-200 items-center justify-center"
+                style={{ borderColor: colors.yellow.dark, borderWidth: 2 }}
+              >
+                <Text style={{ color: colors.yellow.darker }}>Pilih Gambar</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
 
         <View className="mb-6">
           <Text className="text-lg font-bold text-yellow-900 mb-3">Data Lengkap Satwa</Text>

@@ -19,7 +19,7 @@ export const uploadImageToCloudinary = async (
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
 
     // Optional: tambahkan transformasi atau folder
-    formData.append("folder", "profile_images");
+    formData.append("folder", "animal_images");
 
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,

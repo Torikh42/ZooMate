@@ -34,7 +34,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yourcompany.zoomate"
+      "package": "com.torikh42.zoomate"
     },
 
     "web": {
