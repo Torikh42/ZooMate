@@ -2,7 +2,7 @@ import ProfileAvatar from "@/components/ProfileAvatar";
 import ProfileDetails from "@/components/ProfileDetails";
 import ProfileMenuItem from "@/components/ProfileMenuItem";
 import React from "react";
-import { ScrollView, Text, View, Alert } from "react-native";
+import { Alert, ScrollView, Text, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 
 export default function ProfileScreen() {

@@ -1,6 +1,6 @@
 import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
-import { useTasks, TaskWithKandang } from "@/context/TaskContext";
+import { TaskWithKandang, useTasks } from "@/context/TaskContext";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -45,7 +45,9 @@ const TaskItem = ({
           {formatTime(task.jam_tugas)}
         </Text>
       </View>
-      <TouchableOpacity onPress={() => onUpdateStatus(task.id, task.status_tugas)}>
+      <TouchableOpacity
+        onPress={() => onUpdateStatus(task.id, task.status_tugas)}
+      >
         <View
           className="flex-row items-center rounded-lg px-3 py-1 ml-2"
           style={{
@@ -96,11 +98,13 @@ export default function Schedule() {
 
   // Tampilan jika ada error
   if (error) {
-      return (
-          <View className="flex-1 justify-center items-center p-4">
-              <Text className="text-red-500 text-center">Gagal memuat jadwal: {error}</Text>
-          </View>
-      )
+    return (
+      <View className="flex-1 justify-center items-center p-4">
+        <Text className="text-red-500 text-center">
+          Gagal memuat jadwal: {error}
+        </Text>
+      </View>
+    );
   }
 
   return (

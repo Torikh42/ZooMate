@@ -1,11 +1,11 @@
 export interface Satwa {
-  id: string; // uuid
-  created_at: string; // timestamptz
-  kandang_id: string; // uuid (foreign key)
+  id: string; 
+  created_at: string; 
+  kandang_id: string; 
   nama_satwa: string;
   spesies: string;
-  tanggal_lahir: string; // date (format: 'YYYY-MM-DD')
-  jenis_kelamin: "Jantan" | "Betina"; // Union type untuk pilihan terbatas
+  tanggal_lahir: string; 
+  jenis_kelamin: "Jantan" | "Betina"; 
   berat_badan?: number | null;
   tinggi_badan?: number | null;
   jenis_makanan?: string | null;

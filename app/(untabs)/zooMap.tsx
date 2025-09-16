@@ -16,9 +16,8 @@ const ZooMapScreen = () => {
         style={styles.map}
         initialRegion={initialRegion}
         showsUserLocation={true}
-      >
-      </MapView>
-      
+      ></MapView>
+
       <View style={styles.overlay}>
         <Text style={styles.overlayText}>Your Zoo Map</Text>
       </View>

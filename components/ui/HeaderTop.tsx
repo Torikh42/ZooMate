@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
 import colors from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   title: string;
@@ -12,11 +12,17 @@ type Props = {
 export default function HeaderTop({ title }: Props) {
   const router = useRouter();
 
-
   return (
     <View className="flex-row items-center mb-4 px-1 pt-4">
-      <TouchableOpacity className="bg-yellow-200 rounded-full p-1 mr-5 shadow" onPress={router.back}>
-        <MaterialIcons name="arrow-back-ios-new" size={22} color={colors.yellow.darker} />
+      <TouchableOpacity
+        className="bg-yellow-200 rounded-full p-1 mr-5 shadow"
+        onPress={router.back}
+      >
+        <MaterialIcons
+          name="arrow-back-ios-new"
+          size={22}
+          color={colors.yellow.darker}
+        />
       </TouchableOpacity>
       <Text className="font-bold text-xl text-yellow-900">{title}</Text>
     </View>

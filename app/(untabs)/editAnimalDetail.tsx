@@ -2,6 +2,7 @@ import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
 import { Satwa } from "@/types/satwa";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,9 +16,8 @@ import {
   View,
 } from "react-native";
 import { useSatwa } from "../../hooks/useSatwa";
+import { uploadImage } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
-import * as ImagePicker from "expo-image-picker";
-import { uploadImage } from"../../utils/cloudinary"; 
 
 export default function EditAnimalDetail() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function EditAnimalDetail() {
     try {
       let imageUrl = formData.image_url;
       if (imageUri && imageUri !== formData.image_url) {
-        imageUrl =  imageUrl = await uploadImage(imageUri); 
+        imageUrl = imageUrl = await uploadImage(imageUri);
       }
 
       const { created_at, id, ...updateData } = formData;
@@ -101,25 +101,32 @@ export default function EditAnimalDetail() {
     <View key={field} className="bg-yellow-100 rounded-lg py-3 px-4 mb-2">
       <View className="flex-row justify-between items-center min-h-[24px]">
         <Text className="text-sm font-semibold text-gray-800">{label}</Text>
-        
+
         {editingField === field ? (
           <TextInput
             className="border-b border-gray-400 text-sm py-0 px-2 text-right flex-1 ml-3"
-            value={String(formData[field] ?? '')}
+            value={String(formData[field] ?? "")}
             onChangeText={(text) =>
               setFormData((prev) => ({ ...prev, [field]: text }))
             }
             onBlur={() => setEditingField(null)}
             autoFocus
             // Gunakan keyboard numerik untuk field angka
-            keyboardType={(field === 'berat_badan' || field === 'tinggi_badan') ? 'numeric' : 'default'}
+            keyboardType={
+              field === "berat_badan" || field === "tinggi_badan"
+                ? "numeric"
+                : "default"
+            }
           />
         ) : (
           <View className="flex-row items-center justify-end ml-3">
             <Text className="text-sm text-gray-900 text-right">
-              {String(formData[field] ?? 'N/A')}
+              {String(formData[field] ?? "N/A")}
             </Text>
-            <TouchableOpacity className="ml-2" onPress={() => setEditingField(field)}>
+            <TouchableOpacity
+              className="ml-2"
+              onPress={() => setEditingField(field)}
+            >
               <MaterialIcons name="edit" size={18} color={colors.darkBrown} />
             </TouchableOpacity>
           </View>
@@ -131,7 +138,7 @@ export default function EditAnimalDetail() {
   if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color={colors.yellow.darker}/>
+        <ActivityIndicator size="large" color={colors.yellow.darker} />
       </View>
     );
   }
@@ -164,14 +171,18 @@ export default function EditAnimalDetail() {
                 className="w-32 h-32 rounded-full bg-gray-200 items-center justify-center"
                 style={{ borderColor: colors.yellow.dark, borderWidth: 2 }}
               >
-                <Text style={{ color: colors.yellow.darker }}>Pilih Gambar</Text>
+                <Text style={{ color: colors.yellow.darker }}>
+                  Pilih Gambar
+                </Text>
               </View>
             )}
           </TouchableOpacity>
         </View>
 
         <View className="mb-6">
-          <Text className="text-lg font-bold text-yellow-900 mb-3">Data Lengkap Satwa</Text>
+          <Text className="text-lg font-bold text-yellow-900 mb-3">
+            Data Lengkap Satwa
+          </Text>
           {renderEditableRow("Nama Satwa", "nama_satwa")}
           {renderEditableRow("Spesies", "spesies")}
           {renderEditableRow("Jenis Kelamin", "jenis_kelamin")}
@@ -181,7 +192,9 @@ export default function EditAnimalDetail() {
         </View>
 
         <View className="mb-6">
-          <Text className="text-lg font-bold text-yellow-900 mb-3">Catatan Makanan</Text>
+          <Text className="text-lg font-bold text-yellow-900 mb-3">
+            Catatan Makanan
+          </Text>
           {renderEditableRow("Jenis Makanan", "jenis_makanan")}
           {renderEditableRow("Porsi Harian", "porsi_harian")}
         </View>
@@ -189,16 +202,23 @@ export default function EditAnimalDetail() {
         {/* --- Bagian Catatan Harian & Medis --- */}
         {/* Catatan: Mengedit status pakan & riwayat medis biasanya punya halaman/logika sendiri */}
         <View className="mb-6">
-            <Text className="text-lg font-bold text-yellow-900 mb-3">Status & Riwayat (Read-only)</Text>
-            {/* Tampilkan data ini sebagai info, bukan untuk diedit di sini */}
-            <DataRow label="Status Pakan Hari Ini" value={"Belum Ada Catatan"} />
-            <DataRow label="Riwayat Medis Terakhir" value={"Vaksinasi Rabies (2020-03-11)"} />
+          <Text className="text-lg font-bold text-yellow-900 mb-3">
+            Status & Riwayat (Read-only)
+          </Text>
+          {/* Tampilkan data ini sebagai info, bukan untuk diedit di sini */}
+          <DataRow label="Status Pakan Hari Ini" value={"Belum Ada Catatan"} />
+          <DataRow
+            label="Riwayat Medis Terakhir"
+            value={"Vaksinasi Rabies (2020-03-11)"}
+          />
         </View>
-        
+
         <TouchableOpacity
           className="py-4 rounded-full items-center mt-3"
           onPress={handleSave}
-          style={{ backgroundColor: isSaving ? colors.grayText : colors.yellow.darker }}
+          style={{
+            backgroundColor: isSaving ? colors.grayText : colors.yellow.darker,
+          }}
           disabled={isSaving}
         >
           <Text className="text-white font-bold text-base">

@@ -1,9 +1,9 @@
 import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
-import * as ImagePicker from "expo-image-picker";
 import {
   Alert,
   Image,

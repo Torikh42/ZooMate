@@ -1,9 +1,9 @@
 export interface CatatanHarian {
-  id: string; // uuid
-  created_at: string; // timestamptz
-  kandang_id: string; // uuid (foreign key)
-  keeper_id?: string | null; // uuid (foreign key, opsional)
-  jam_tugas: string; // timestamptz (akan diterima sebagai string ISO)
+  id: string;
+  created_at: string; 
+  kandang_id: string;
+  keeper_id?: string | null; 
+  jam_tugas: string;
   jenis_tugas: "Pakan" | "Kebersihan" | "Observasi" | "Lainnya";
   status_tugas: "Belum" | "Selesai"
   catatan_tugas?: string | null;

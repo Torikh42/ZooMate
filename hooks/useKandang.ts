@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../utils/supabase";
+import { useCallback, useEffect, useState } from "react";
 import { Kandang } from "../types/kandang";
+import { supabase } from "../utils/supabase";
 
 export const useKandang = () => {
   const [kandangData, setKandangData] = useState<Kandang[]>([]);
@@ -29,4 +29,3 @@ export const useKandang = () => {
 
   return { kandangData, loading, error, refetch: fetchKandang };
 };
-
