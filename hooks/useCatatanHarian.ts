@@ -1,45 +1,53 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../utils/supabase";
-import { CatatanHarian } from "../types/catatanHarian"; // Pastikan path ini benar
+import { CatatanHarian } from "../types/catatanHarian"; // Impor tipe dasar
 
-export const useCatatanHarian = (satwaId?: string) => {
-  // 1. Ubah tipe state menjadi array: CatatanHarian[]
-  const [catatanHarianData, setCatatanHarianData] = useState<CatatanHarian[] | null>(null);
+// Tipe data baru untuk menampung data gabungan dari catatan_harian dan kandang
+export interface CatatanHarianWithKandang extends CatatanHarian {
+  kandang: {
+    nama_kandang: string;
+  } | null;
+}
+
+// Hook sekarang tidak perlu parameter, karena akan mengambil semua tugas hari ini
+export const useCatatanHarian = () => {
+  const [tasks, setTasks] = useState<CatatanHarianWithKandang[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCatatanHarian = useCallback(async () => {
-    if (!satwaId) {
-      setLoading(false);
-      return;
-    }
-
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
+    
+    // Tentukan awal dan akhir hari ini untuk filter
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
 
-    // 2. Dapatkan tanggal hari ini dalam format YYYY-MM-DD
-    const today = new Date().toISOString().split('T')[0];
-
-    // 3. Tambahkan filter tanggal dan hapus .single()
+    // Kueri baru dengan relasi ke tabel 'kandang'
     const { data, error } = await supabase
       .from("catatan_harian")
-      .select("*")
-      .eq("satwa_id", satwaId)
-      .eq("tanggal_catatan", today); // <-- Filter tambahan
+      .select(`
+        *,
+        kandang:kandang_id ( nama_kandang )
+      `)
+      .gte("jam_tugas", startOfDay)
+      .lt("jam_tugas", endOfDay)
+      .order("jam_tugas", { ascending: true });
 
     if (error) {
       setError(error.message);
-      setCatatanHarianData(null);
+      setTasks([]); // Kembalikan array kosong jika error
     } else {
-      // Data di sini akan selalu berupa array (bisa berisi 0 atau 1 item)
-      setCatatanHarianData(data);
+      setTasks(data as CatatanHarianWithKandang[]);
       setError(null);
     }
     setLoading(false);
-  }, [satwaId]); // Dependency on satwaId for useCallback
+  }, []);
 
   useEffect(() => {
-    fetchCatatanHarian();
-  }, [fetchCatatanHarian]); // Dependency on fetchCatatanHarian
+    fetchTasks();
+  }, [fetchTasks]);
 
-  return { catatanHarianData, loading, error, refetch: fetchCatatanHarian };
+  // Kembalikan fetchTasks sebagai 'refetch' untuk fitur pull-to-refresh
+  return { tasks, loading, error, refetch: fetchTasks };
 };

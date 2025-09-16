@@ -1,53 +1,54 @@
 import HeaderTop from "@/components/ui/HeaderTop";
+import colors from "@/constants/Colors";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
+  Image,
   ScrollView,
   Text,
-  Image,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useCatatanHarian } from "../../hooks/useCatatanHarian";
 import { useSatwa } from "../../hooks/useSatwa";
-import colors from "@/constants/Colors";
+
+// Komponen helper bisa tetap di sini atau dipindah ke file terpisah
+const DataRow = ({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | number | null;
+}) => (
+  <View className="bg-yellow-100 rounded-lg py-3 px-4 mb-2 flex-row justify-between items-center">
+    <Text className="text-sm font-semibold text-gray-800">{label}</Text>
+    <Text className="text-sm text-gray-900 text-right">{value || "N/A"}</Text>
+  </View>
+);
 
 export default function AnimalDetail() {
   const router = useRouter();
-  // Memberi tipe yang jelas pada params untuk type safety
   const { satwaId, satwaName } = useLocalSearchParams<{
     satwaId: string;
     satwaName?: string;
   }>();
 
-  // Ambil data satwa tunggal dan catatan harian berdasarkan satwaId
+  // Hanya perlu mengambil data satwa, tidak perlu catatan harian
   const {
     singleSatwa: animal,
-    loading: satwaLoading,
-    error: satwaError,
+    loading,
+    error,
   } = useSatwa(undefined, satwaId);
-  const {
-    catatanHarianData,
-    loading: catatanLoading,
-    error: catatanError,
-  } = useCatatanHarian(satwaId);
 
-  // Gabungkan status loading dan error dari kedua hooks
-  const isLoading = satwaLoading || catatanLoading;
-  const error = satwaError || catatanError;
-
-  // Tampilkan loading indicator jika salah satu data sedang dimuat
-  if (isLoading) {
+  if (loading) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
-        <ActivityIndicator size="large" color="#73642D" />
+        <ActivityIndicator size="large" color={colors.yellow.darker} />
         <Text className="mt-2 text-gray-600">Loading data...</Text>
       </View>
     );
   }
 
-  // Tampilkan error jika salah satu hook gagal
   if (error) {
     return (
       <View className="flex-1 justify-center items-center bg-white p-4">
@@ -58,7 +59,6 @@ export default function AnimalDetail() {
     );
   }
 
-  // Tampilkan pesan jika data hewan tidak ditemukan setelah selesai loading
   if (!animal) {
     return (
       <View className="flex-1 justify-center items-center bg-white">
@@ -66,12 +66,6 @@ export default function AnimalDetail() {
       </View>
     );
   }
-
-  // Ambil catatan hari ini dari array (bisa jadi null jika belum ada)
-  const catatanHariIni =
-    catatanHarianData && catatanHarianData.length > 0
-      ? catatanHarianData[0]
-      : null;
 
   return (
     <ScrollView
@@ -83,12 +77,11 @@ export default function AnimalDetail() {
           title={satwaName ? `Detail Satwa - ${satwaName}` : "Detail Satwa"}
         />
 
-                <Image
-          // Gunakan gambar profil satwa jika ada, jika tidak, gunakan gambar placeholder
+        <Image
           source={
             animal.image_url
               ? { uri: animal.image_url }
-              : require("../../assets/images/hewan.png") // Pastikan path placeholder ini benar
+              : require("../../assets/images/hewan.png")
           }
           className="w-full h-56 rounded-xl mb-5 bg-gray-200"
           resizeMode="cover"
@@ -114,28 +107,21 @@ export default function AnimalDetail() {
           />
         </View>
 
-        {/* --- Bagian Catatan Makanan Harian --- */}
+        {/* --- Bagian Catatan Makanan --- */}
         <View className="mb-6">
           <Text className="text-xl font-bold text-yellow-900 mb-3">
-            Catatan Makanan Harian
+            Informasi Pakan
           </Text>
-          <DataRow
-            label="Jenis Makanan"
-            value={animal.jenis_makanan || "N/A"}
-          />
-          <DataRow label="Porsi Harian" value={animal.porsi_harian || "N/A"} />
-          <DataRow
-            label="Status Pakan Hari Ini"
-            value={catatanHariIni?.status_pakan || "Belum Ada Catatan"}
-          />
+          <DataRow label="Jenis Makanan" value={animal.jenis_makanan} />
+          <DataRow label="Porsi Harian" value={animal.porsi_harian} />
+          {/* Status pakan harian DIHAPUS dari sini */}
         </View>
 
-        {/* --- Bagian Riwayat Medis --- */}
+        {/* --- Bagian Riwayat Medis (Tetap sebagai placeholder) --- */}
         <View className="mb-6">
           <Text className="text-xl font-bold text-yellow-900 mb-3">
             Riwayat Medis
           </Text>
-          {/* TODO: Ganti data placeholder ini dengan data dari hook riwayat medis */}
           <DataRow label="2020-03-11" value="Vaksinasi Rabies" />
           <DataRow label="2021-08-24" value="Operasi kecil" />
         </View>
@@ -144,32 +130,17 @@ export default function AnimalDetail() {
           style={{ backgroundColor: colors.yellow.darker }}
           className="py-4 rounded-full items-center mt-3"
           onPress={() => {
-            // Mengirim satwaId ke halaman edit
             router.push({
-              pathname: "/(untabs)/editAnimalDetail", // Pastikan path ini benar
+              pathname: "/(untabs)/editAnimalDetail",
               params: { satwaId: animal.id },
             });
           }}
         >
           <Text className="text-white font-bold text-base">
-            Edit Catatan Baru
+            Edit Data Satwa
           </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
-
-// Komponen helper untuk menampilkan baris data agar kode tidak berulang
-const DataRow = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) => (
-  <View className="bg-yellow-100 rounded-lg py-3 px-4 mb-2 flex-row justify-between items-center">
-    <Text className="text-sm font-semibold text-gray-800">{label}</Text>
-    <Text className="text-sm text-gray-900 text-right">{value}</Text>
-  </View>
-);

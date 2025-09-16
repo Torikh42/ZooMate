@@ -1,157 +1,223 @@
 import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
+import { useAuth } from "@/context/AuthContext";
+import { Kandang } from "@/types/kandang";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { supabase } from "../../utils/supabase";
 
-const dummyTaskTypes = ["Pakan", "Pengecekan", "Medis", "Kebersihan"];
-const dummyCages = ["Harimau", "Gajah", "Rusa", "Burung", "Ular"];
-const dummyTimeRanges = [
+// Opsi jenis tugas
+const taskTypes = ["Pakan", "Kebersihan", "Observasi", "Medis", "Lainnya"];
+
+// Daftar rentang waktu yang bisa dipilih
+const timeSlots = [
   "08:00 - 09:00",
   "09:00 - 10:00",
   "10:00 - 11:00",
   "11:00 - 12:00",
   "13:00 - 14:00",
   "14:00 - 15:00",
+  "15:00 - 16:00",
 ];
 
-export default function AddSchedule() {
-  const [taskName, setTaskName] = useState("");
-  const [taskType, setTaskType] = useState("");
-  const [cage, setCage] = useState("");
-  const [taskTime, setTaskTime] = useState("");
+// Tipe data untuk item di dalam dropdown
+interface DropdownItem {
+  id: string;
+  name: string;
+}
 
-  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
-  const [showCageDropdown, setShowCageDropdown] = useState(false);
-  const [showTimeDropdown, setShowTimeDropdown] = useState(false);
+// Tipe data untuk props komponen DropdownSelector
+interface DropdownSelectorProps {
+  label: string;
+  items: DropdownItem[];
+  selectedValue: string | null;
+  onSelect: (value: string) => void;
+  placeholder: string;
+}
+
+// Komponen dropdown yang dibuat reusable
+const DropdownSelector = ({
+  label,
+  items,
+  selectedValue,
+  onSelect,
+  placeholder,
+}: DropdownSelectorProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedItem = items.find((item) => item.id === selectedValue);
 
   return (
-    <ScrollView className="flex-1 bg-white p-4 mt-5">
-      {/* Header */}
+    <View className="mb-4">
+      <Text className="font-bold text-yellow-900 mb-2">{label}</Text>
+      <TouchableOpacity
+        className="bg-yellow-100 rounded-full py-4 px-5 flex-row justify-between items-center"
+        onPress={() => setIsOpen(!isOpen)}
+      >
+        <Text className="text-base text-gray-600">
+          {selectedItem ? selectedItem.name : placeholder}
+        </Text>
+        <MaterialIcons
+          name={isOpen ? "arrow-drop-up" : "arrow-drop-down"}
+          size={24}
+          color={colors.grayText}
+        />
+      </TouchableOpacity>
+      {isOpen && (
+        <View className="mt-2">
+          {items.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              className="bg-yellow-50 py-3 px-4 rounded-lg mb-1"
+              onPress={() => {
+                onSelect(item.id);
+                setIsOpen(false);
+              }}
+            >
+              <Text className="text-base text-yellow-900">{item.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default function AddSchedule() {
+  const { user } = useAuth();
+  const [kandangList, setKandangList] = useState<Kandang[]>([]);
+  const [selectedKandangId, setSelectedKandangId] = useState<string | null>(
+    null
+  );
+  const [taskType, setTaskType] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [taskNotes, setTaskNotes] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    const fetchKandang = async () => {
+      setLoading(true);
+      const { data, error } = await supabase.from("kandang").select("*");
+      if (data) setKandangList(data);
+      if (error) Alert.alert("Error", "Gagal memuat daftar kandang.");
+      setLoading(false);
+    };
+    fetchKandang();
+  }, []);
+
+  const handleSaveSchedule = async () => {
+    if (!taskType || !selectedKandangId || !selectedTime) {
+      Alert.alert("Error", "Harap pilih jenis tugas, kandang, dan jam tugas.");
+      return;
+    }
+    setIsSaving(true);
+
+    const startTime = selectedTime.split(" ")[0];
+    const [hours, minutes] = startTime.split(":");
+
+    const taskDate = new Date();
+    taskDate.setHours(parseInt(hours, 10));
+    taskDate.setMinutes(parseInt(minutes, 10));
+    taskDate.setSeconds(0);
+    taskDate.setMilliseconds(0);
+
+    const newTask = {
+      kandang_id: selectedKandangId,
+      keeper_id: user?.id,
+      jam_tugas: taskDate.toISOString(),
+      jenis_tugas: taskType,
+      status_tugas: "Belum",
+      catatan_tugas: taskNotes || null,
+    };
+
+    const { error: insertError } = await supabase
+      .from("catatan_harian")
+      .insert(newTask);
+
+    setIsSaving(false);
+    if (insertError) {
+      Alert.alert("Error", "Gagal menyimpan tugas: " + insertError.message);
+    } else {
+      Alert.alert(
+        "Sukses",
+        `Tugas "${taskType}" berhasil dibuat untuk kandang terpilih.`
+      );
+      router.back();
+    }
+  };
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        className="flex-1"
+        size="large"
+        color={colors.yellow.darker}
+      />
+    );
+  }
+
+  return (
+    <ScrollView className="flex-1 bg-white p-4 pt-6 mt-5">
       <HeaderTop title="Tambah Tugas" />
 
-      {/* Nama Tugas */}
-      <Text className="font-bold text-yellow-900 mb-2 mt-3">Nama Tugas</Text>
-      <TextInput
-        className="bg-yellow-200 rounded-full py-3 px-4 text-base text-gray-500 mb-4"
-        placeholder="Ex: Bersihkan Kandang Gajah"
-        placeholderTextColor={colors.grayText}
-        value={taskName}
-        onChangeText={setTaskName}
+      <DropdownSelector
+        label="Jenis Tugas"
+        placeholder="Pilih jenis tugas"
+        selectedValue={taskType}
+        onSelect={setTaskType}
+        items={taskTypes.map((t) => ({ id: t, name: t }))}
       />
 
-      {/* Jenis Tugas Dropdown */}
-      <Text className="font-bold text-yellow-900 mb-2 mt-3">Jenis Tugas</Text>
-      <TouchableOpacity
-        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
-        onPress={() => setShowTypeDropdown(!showTypeDropdown)}
-      >
-        <Text className="text-base text-gray-500">
-          {taskType || "Pilih jenis tugas"}
-        </Text>
-        <MaterialIcons
-          name="arrow-drop-down"
-          size={24}
-          color={colors.grayText}
-        />
-      </TouchableOpacity>
-      {showTypeDropdown && (
-        <View className="mb-2">
-          {dummyTaskTypes.map((item) => (
-            <TouchableOpacity
-              key={item}
-              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
-              onPress={() => {
-                setTaskType(item);
-                setShowTypeDropdown(false);
-              }}
-            >
-              <Text className="text-base text-yellow-900">{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      <DropdownSelector
+        label="Pilih Kandang"
+        placeholder="Pilih kandang"
+        selectedValue={selectedKandangId}
+        onSelect={setSelectedKandangId}
+        items={kandangList.map((k) => ({ id: k.id, name: k.nama_kandang }))}
+      />
 
-      {/* Kandang/Satwa Dropdown */}
-      <Text className="font-bold text-yellow-900 mb-2 mt-3">
-        Pilih Kandang/Satwa
+      <DropdownSelector
+        label="Jam Tugas"
+        placeholder="Pilih rentang waktu"
+        selectedValue={selectedTime}
+        onSelect={setSelectedTime}
+        items={timeSlots.map((t) => ({ id: t, name: t }))}
+      />
+
+      <Text className="font-bold text-yellow-900 mb-2 mt-4">
+        Catatan Tugas (Opsional)
       </Text>
-      <TouchableOpacity
-        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
-        onPress={() => setShowCageDropdown(!showCageDropdown)}
-      >
-        <Text className="text-base text-gray-500">
-          {cage || "Pilih kandang/satwa"}
-        </Text>
-        <MaterialIcons
-          name="arrow-drop-down"
-          size={24}
-          color={colors.grayText}
-        />
-      </TouchableOpacity>
-      {showCageDropdown && (
-        <View className="mb-2">
-          {dummyCages.map((item) => (
-            <TouchableOpacity
-              key={item}
-              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
-              onPress={() => {
-                setCage(item);
-                setShowCageDropdown(false);
-              }}
-            >
-              <Text className="text-base text-yellow-900">{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      <TextInput
+        className="bg-yellow-100 rounded-2xl p-4 text-base text-gray-700 min-h-[100px]"
+        placeholder="Tulis instruksi khusus di sini..."
+        placeholderTextColor={colors.grayText}
+        value={taskNotes}
+        onChangeText={setTaskNotes}
+        multiline
+        textAlignVertical="top"
+      />
 
-      {/* Jam Tugas Dropdown */}
-      <Text className="font-bold text-yellow-900 mb-2 mt-3">Jam Tugas</Text>
       <TouchableOpacity
-        className="bg-yellow-200 rounded-full py-3 px-4 flex-row justify-between items-center mb-2"
-        onPress={() => setShowTimeDropdown(!showTimeDropdown)}
+        style={{
+          backgroundColor: isSaving ? colors.grayText : colors.yellow.darker,
+        }}
+        className="rounded-lg py-4 items-center mt-6"
+        onPress={handleSaveSchedule}
+        disabled={isSaving}
       >
-        <Text className="text-base text-gray-500">
-          {taskTime || "Pilih rentang waktu"}
+        <Text className="text-white font-bold text-base">
+          {isSaving ? "Menyimpan..." : "Simpan Tugas"}
         </Text>
-        <MaterialIcons
-          name="arrow-drop-down"
-          size={24}
-          color={colors.grayText}
-        />
-      </TouchableOpacity>
-      {showTimeDropdown && (
-        <View className="mb-2">
-          {dummyTimeRanges.map((item) => (
-            <TouchableOpacity
-              key={item}
-              className="bg-yellow-100 py-2 px-4 rounded-lg mb-1"
-              onPress={() => {
-                setTaskTime(item);
-                setShowTimeDropdown(false);
-              }}
-            >
-              <Text className="text-base text-yellow-900">{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
-
-      {/* Tombol Simpan */}
-      <TouchableOpacity
-        style={{ backgroundColor: colors.yellow.darker }}
-        className="rounded-lg py-3 items-center mt-6"
-        onPress={() => router.push("../../(tabs)")}
-      >
-        <Text className="text-white font-bold text-base">Simpan Jadwal</Text>
       </TouchableOpacity>
     </ScrollView>
   );
