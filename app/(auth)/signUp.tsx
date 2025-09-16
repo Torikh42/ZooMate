@@ -10,7 +10,8 @@ import {
   View,
   Platform,
 } from "react-native";
-import { Profesi, useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import { Profesi } from "../../types/user";
 import colors from "../../constants/Colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 

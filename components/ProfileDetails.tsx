@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import colors from "@/constants/Colors";
-import { User as Profile } from "@/types/user";
+import { Profile } from "@/types/user";
 
 type Props = {
   profile: Profile | null;
