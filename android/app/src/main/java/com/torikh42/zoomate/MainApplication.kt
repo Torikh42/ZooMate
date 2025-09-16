@@ -1,4 +1,4 @@
-package com.yourcompany.zoomate
+package com.torikh42.zoomate
 
 import android.app.Application
 import android.content.res.Configuration

@@ -1,4 +1,4 @@
-package com.yourcompany.zoomate
+package com.torikh42.zoomate
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
