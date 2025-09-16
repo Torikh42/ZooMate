@@ -23,9 +23,7 @@ export default function FeatureCard({
     >
       <View className="flex-1">
         <Text className="font-bold text-gray-800 text-xl">{title}</Text>
-        <Text className="text-gray-500 mt-1 text">
-          {description}
-        </Text>
+        <Text className="text-gray-500 mt-1 text">{description}</Text>
       </View>
       <View
         className="w-11 h-11 rounded-lg justify-center items-center"

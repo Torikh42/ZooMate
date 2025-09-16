@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../utils/supabase";
+import { useCallback, useEffect, useState } from "react";
 import { CatatanHarian } from "../types/catatanHarian"; // Impor tipe dasar
+import { supabase } from "../utils/supabase";
 
 // Tipe data baru untuk menampung data gabungan dari catatan_harian dan kandang
 export interface CatatanHarianWithKandang extends CatatanHarian {
@@ -17,19 +17,29 @@ export const useCatatanHarian = () => {
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
-    
+
     // Tentukan awal dan akhir hari ini untuk filter
     const today = new Date();
-    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
-    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
+    const startOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ).toISOString();
+    const endOfDay = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1
+    ).toISOString();
 
     // Kueri baru dengan relasi ke tabel 'kandang'
     const { data, error } = await supabase
       .from("catatan_harian")
-      .select(`
+      .select(
+        `
         *,
         kandang:kandang_id ( nama_kandang )
-      `)
+      `
+      )
       .gte("jam_tugas", startOfDay)
       .lt("jam_tugas", endOfDay)
       .order("jam_tugas", { ascending: true });

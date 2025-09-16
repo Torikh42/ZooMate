@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { supabase } from "../../utils/supabase";
 import { Kandang } from "../../types/kandang";
+import { supabase } from "../../utils/supabase";
 
 export default function AddKandang() {
   const [namaKandang, setNamaKandang] = useState("");
@@ -64,7 +64,10 @@ export default function AddKandang() {
       <HeaderTop title="Tambah Kandang Baru" />
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Nama Kandang
         </Text>
         <TextInput
@@ -81,7 +84,10 @@ export default function AddKandang() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Lokasi Deskripsi
         </Text>
         <TextInput
@@ -98,7 +104,10 @@ export default function AddKandang() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Latitude
         </Text>
         <TextInput
@@ -116,7 +125,10 @@ export default function AddKandang() {
       </View>
 
       <View className="mb-6">
-        <Text className="text-lg font-semibold mb-2" style={{ color: colors.yellow.darker }}>
+        <Text
+          className="text-lg font-semibold mb-2"
+          style={{ color: colors.yellow.darker }}
+        >
           Longitude
         </Text>
         <TextInput

@@ -1,14 +1,14 @@
 import HeaderTop from "@/components/ui/HeaderTop";
 import { useAuth } from "@/context/AuthContext";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useLocalSearchParams, router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import {
+  ActivityIndicator,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  ActivityIndicator,
+  View,
 } from "react-native";
 import AnimalCard from "../../components/AnimalCard";
 import { useSatwa } from "../../hooks/useSatwa";
@@ -18,7 +18,7 @@ export default function AnimalList() {
     kandangId: string;
     kandangName?: string;
   }>();
-  
+
   // FIX 1: Ambil 'satwaList' dari hook, bukan 'satwaData'
   const { satwaList, loading, error } = useSatwa(kandangId);
   const { profile } = useAuth();
@@ -48,7 +48,7 @@ export default function AnimalList() {
       <ScrollView className="flex-1 p-4 pt-6 mt-5">
         <HeaderTop title={`Satwa di ${kandangName || "Kandang"}`} />
         {/* Anda bisa menambahkan SearchBar di sini nanti jika perlu */}
-        
+
         {/* FIX 2: Cek jika satwaList ada dan panjangnya 0 */}
         {!satwaList || satwaList.length === 0 ? (
           <Text className="text-center mt-10 text-gray-500">

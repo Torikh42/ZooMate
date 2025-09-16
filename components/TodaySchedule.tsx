@@ -1,9 +1,9 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import colors from "../constants/Colors";
 import { useTasks } from "../context/TaskContext"; // Impor hook baru
-import { MaterialIcons } from "@expo/vector-icons";
 
 export default function TodaySchedule() {
   const router = useRouter();
@@ -12,7 +12,11 @@ export default function TodaySchedule() {
 
   if (loading) {
     // ... Tampilan loading tidak berubah
-    return <View><ActivityIndicator /></View>;
+    return (
+      <View>
+        <ActivityIndicator />
+      </View>
+    );
   }
 
   // Ambil 3 tugas pertama untuk ditampilkan
@@ -56,7 +60,7 @@ export default function TodaySchedule() {
                   className="flex-1 h-8 rounded-md justify-center px-2"
                 >
                   <Text className="text-xs text-gray-500" numberOfLines={1}>
-                    {task.jenis_tugas} - {task.kandang?.nama_kandang || 'N/A'}
+                    {task.jenis_tugas} - {task.kandang?.nama_kandang || "N/A"}
                   </Text>
                 </View>
               </View>

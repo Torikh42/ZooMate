@@ -34,11 +34,7 @@ export default function AnimalDetail() {
   }>();
 
   // Hanya perlu mengambil data satwa, tidak perlu catatan harian
-  const {
-    singleSatwa: animal,
-    loading,
-    error,
-  } = useSatwa(undefined, satwaId);
+  const { singleSatwa: animal, loading, error } = useSatwa(undefined, satwaId);
 
   if (loading) {
     return (

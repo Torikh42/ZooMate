@@ -1,19 +1,19 @@
+import HeaderTop from "@/components/ui/HeaderTop";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
+  RefreshControl,
   ScrollView,
   Text,
-  View,
   TouchableOpacity,
-  RefreshControl, // Added RefreshControl
+  View,
 } from "react-native";
 import AnimalCard from "../../components/AnimalCard";
 import SearchBar from "../../components/ui/SearchBar";
-import { useKandang } from "../../hooks/useKandang";
-import { useAuth } from "../../context/AuthContext";
 import colors from "../../constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
-import HeaderTop from "@/components/ui/HeaderTop";
-import { router } from "expo-router";
+import { useAuth } from "../../context/AuthContext";
+import { useKandang } from "../../hooks/useKandang";
 
 export default function SatwaData() {
   const [search, setSearch] = useState("");
@@ -27,7 +27,8 @@ export default function SatwaData() {
     setRefreshing(false);
   };
 
-  if (loading && !refreshing) { // Only show full loading if not refreshing
+  if (loading && !refreshing) {
+    // Only show full loading if not refreshing
     return (
       <View className="flex-1 justify-center items-center bg-white">
         <Text>Loading data kandang...</Text>
@@ -43,18 +44,24 @@ export default function SatwaData() {
     );
   }
 
-  const canAddKandang = profile?.profesi === "zookeeper" || profile?.profesi === "supervisor";
+  const canAddKandang =
+    profile?.profesi === "zookeeper" || profile?.profesi === "supervisor";
 
-  const filteredKandang = kandangData.filter((kandang) =>
-    (kandang.nama_kandang || "").toLowerCase().includes(search.toLowerCase()) ||
-    (kandang.lokasi && kandang.lokasi.toLowerCase().includes(search.toLowerCase()))
+  const filteredKandang = kandangData.filter(
+    (kandang) =>
+      (kandang.nama_kandang || "")
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
+      (kandang.lokasi &&
+        kandang.lokasi.toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
     <View className="flex-1 bg-white">
       <ScrollView
         className="flex-1 p-4 pt-6 mt-5"
-        refreshControl={ // Added RefreshControl
+        refreshControl={
+          // Added RefreshControl
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
@@ -83,12 +90,12 @@ export default function SatwaData() {
         ))}
       </ScrollView>
       {canAddKandang && (
-      <TouchableOpacity
-        className="absolute right-6 bottom-6 bg-yellow-200 rounded-full p-4 shadow-md"
-        onPress={() => router.push("../(untabs)/addKandang")}
-      >
-        <MaterialIcons name="add" size={32} color={colors.yellow.darker} />
-      </TouchableOpacity>
+        <TouchableOpacity
+          className="absolute right-6 bottom-6 bg-yellow-200 rounded-full p-4 shadow-md"
+          onPress={() => router.push("../(untabs)/addKandang")}
+        >
+          <MaterialIcons name="add" size={32} color={colors.yellow.darker} />
+        </TouchableOpacity>
       )}
     </View>
   );

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { supabase } from "../utils/supabase";
+import { useCallback, useEffect, useState } from "react";
 import { Satwa } from "../types/satwa";
+import { supabase } from "../utils/supabase";
 
 export const useSatwa = (kandangId?: string, satwaId?: string) => {
   const [satwaList, setSatwaList] = useState<Satwa[] | null>(null);
