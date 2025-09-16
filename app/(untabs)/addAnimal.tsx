@@ -1,22 +1,22 @@
 import HeaderTop from "@/components/ui/HeaderTop";
 import colors from "@/constants/Colors";
-import { useLocalSearchParams, router } from "expo-router";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { router, useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
 import {
   Alert,
+  Image,
+  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
-  Image,
 } from "react-native";
-import { supabase } from "../../utils/supabase";
 import { Satwa } from "../../types/satwa";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import * as ImagePicker from "expo-image-picker";
-import { uploadImageToCloudinary } from "../../utils/cloudinary";
+import { uploadImage } from "../../utils/cloudinary";
+import { supabase } from "../../utils/supabase";
 
 export default function AddAnimal() {
   const { kandangId, kandangName } = useLocalSearchParams();
@@ -49,7 +49,13 @@ export default function AddAnimal() {
   };
 
   const handleAddAnimal = async () => {
-    if (!kandangId || !namaSatwa || !spesies || !tanggalLahir || !jenisKelamin) {
+    if (
+      !kandangId ||
+      !namaSatwa ||
+      !spesies ||
+      !tanggalLahir ||
+      !jenisKelamin
+    ) {
       Alert.alert("Error", "Harap isi semua kolom wajib.");
       return;
     }
@@ -58,7 +64,7 @@ export default function AddAnimal() {
     try {
       let imageUrl = null;
       if (imageUri) {
-        imageUrl = await uploadImageToCloudinary(imageUri);
+        imageUrl = await uploadImage(imageUri);
       }
 
       const { error } = await supabase.from("satwa").insert({
@@ -204,7 +210,9 @@ export default function AddAnimal() {
             style={{
               borderColor: colors.yellow.darker,
               backgroundColor:
-                jenisKelamin === "Jantan" ? colors.yellow.normal : "transparent",
+                jenisKelamin === "Jantan"
+                  ? colors.yellow.normal
+                  : "transparent",
             }}
             onPress={() => setJenisKelamin("Jantan")}
           >
@@ -215,7 +223,9 @@ export default function AddAnimal() {
             style={{
               borderColor: colors.yellow.darker,
               backgroundColor:
-                jenisKelamin === "Betina" ? colors.yellow.normal : "transparent",
+                jenisKelamin === "Betina"
+                  ? colors.yellow.normal
+                  : "transparent",
             }}
             onPress={() => setJenisKelamin("Betina")}
           >

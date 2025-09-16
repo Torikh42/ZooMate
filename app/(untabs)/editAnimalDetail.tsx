@@ -17,7 +17,7 @@ import {
 import { useSatwa } from "../../hooks/useSatwa";
 import { supabase } from "../../utils/supabase";
 import * as ImagePicker from "expo-image-picker";
-import { uploadImageToCloudinary } from "../../utils/cloudinary";
+import { uploadImage } from"../../utils/cloudinary"; 
 
 export default function EditAnimalDetail() {
   const router = useRouter();
@@ -60,7 +60,7 @@ export default function EditAnimalDetail() {
     try {
       let imageUrl = formData.image_url;
       if (imageUri && imageUri !== formData.image_url) {
-        imageUrl = await uploadImageToCloudinary(imageUri);
+        imageUrl =  imageUrl = await uploadImage(imageUri); 
       }
 
       const { created_at, id, ...updateData } = formData;

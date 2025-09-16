@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Text,
+  Image,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -80,6 +81,17 @@ export default function AnimalDetail() {
       <View className="p-4 pt-6 mt-5">
         <HeaderTop
           title={satwaName ? `Detail Satwa - ${satwaName}` : "Detail Satwa"}
+        />
+
+                <Image
+          // Gunakan gambar profil satwa jika ada, jika tidak, gunakan gambar placeholder
+          source={
+            animal.image_url
+              ? { uri: animal.image_url }
+              : require("../../assets/images/hewan.png") // Pastikan path placeholder ini benar
+          }
+          className="w-full h-56 rounded-xl mb-5 bg-gray-200"
+          resizeMode="cover"
         />
 
         {/* --- Bagian Data Lengkap Satwa --- */}
