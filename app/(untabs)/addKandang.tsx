@@ -4,12 +4,14 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
+  Modal,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import QRCode from "react-native-qrcode-svg";
 import { Kandang } from "../../types/kandang";
 import { supabase } from "../../utils/supabase";
 
@@ -19,6 +21,9 @@ export default function AddKandang() {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [newQrValue, setNewQrValue] = useState("");
 
   const handleAddKandang = async () => {
     if (!namaKandang || !lokasi || !latitude || !longitude) {
@@ -36,18 +41,23 @@ export default function AddKandang() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.from("kandang").insert({
-        nama_kandang: namaKandang,
-        lokasi: lokasi,
-        latitude: latNum,
-        longitude: lonNum,
-      } as Omit<Kandang, "id" | "created_at">);
+      const { data, error } = await supabase
+        .from("kandang")
+        .insert({
+          nama_kandang: namaKandang,
+          lokasi: lokasi,
+          latitude: latNum,
+          longitude: lonNum,
+        } as Omit<Kandang, "id" | "created_at">)
+        .select()
+        .single();
 
       if (error) {
         Alert.alert("Error", error.message);
-      } else {
-        Alert.alert("Sukses", "Kandang berhasil ditambahkan!");
-        router.back(); // Navigate back to satwaData.tsx
+      } else if (data) {
+        const qrValue = `zoomate://kandang/${data.id}`;
+        setNewQrValue(qrValue);
+        setIsPopupVisible(true);
       }
     } catch (err: any) {
       Alert.alert("Error", err.message);
@@ -63,6 +73,7 @@ export default function AddKandang() {
     >
       <HeaderTop title="Tambah Kandang Baru" />
 
+      {/* Input Nama */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -83,6 +94,7 @@ export default function AddKandang() {
         />
       </View>
 
+      {/* Input Lokasi */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -103,6 +115,7 @@ export default function AddKandang() {
         />
       </View>
 
+      {/* Input Latitude */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -124,6 +137,7 @@ export default function AddKandang() {
         />
       </View>
 
+      {/* Input Longitude */}
       <View className="mb-6">
         <Text
           className="text-lg font-semibold mb-2"
@@ -145,6 +159,7 @@ export default function AddKandang() {
         />
       </View>
 
+      {/* Tombol Simpan */}
       <TouchableOpacity
         style={{ backgroundColor: colors.yellow.darker }}
         className="bg-yellow-800 py-3 rounded-lg items-center mt-3"
@@ -155,6 +170,35 @@ export default function AddKandang() {
           {loading ? "Menambahkan..." : "Tambah Kandang"}
         </Text>
       </TouchableOpacity>
+
+      {/* Popup QRCode */}
+      <Modal
+        visible={isPopupVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          setIsPopupVisible(false);
+          router.back();
+        }}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-white p-6 rounded-2xl items-center">
+            <Text className="text-lg font-semibold mb-4 text-center">
+              QR Code Kandang Baru
+            </Text>
+            <QRCode value={newQrValue} size={200} />
+            <TouchableOpacity
+              onPress={() => {
+                setIsPopupVisible(false);
+                router.back();
+              }}
+              className="mt-6 bg-yellow-800 px-6 py-2 rounded-lg"
+            >
+              <Text className="text-white font-bold">Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
