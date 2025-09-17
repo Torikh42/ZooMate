@@ -1,3 +1,4 @@
+// useKandang.ts
 import { useCallback, useEffect, useState } from "react";
 import { Kandang } from "../types/kandang";
 import { supabase } from "../utils/supabase";
@@ -11,7 +12,7 @@ export const useKandang = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("kandang")
-      .select("id, created_at, nama_kandang, lokasi, latitude, longitude");
+      .select("id, created_at, nama_kandang, lokasi, latitude, longitude, status_pakan");
 
     if (error) {
       setError(error.message);

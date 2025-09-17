@@ -1,3 +1,4 @@
+// useSatwa.ts
 import { useCallback, useEffect, useState } from "react";
 import { Satwa } from "../types/satwa";
 import { supabase } from "../utils/supabase";
@@ -61,3 +62,5 @@ export const useSatwa = (kandangId?: string, satwaId?: string) => {
 
   return { satwaList, singleSatwa, loading, error, refetch: fetchSatwa };
 };
+
+;

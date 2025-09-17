@@ -19,6 +19,40 @@ import { useSatwa } from "../../hooks/useSatwa";
 import { uploadImage } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
 
+const StatusPakanSelector = ({ 
+  currentStatus, 
+  onStatusChange 
+}: { 
+  currentStatus: 'Belum Diberi' | 'Sudah Diberi';
+  onStatusChange: (status: 'Belum Diberi' | 'Sudah Diberi') => void;
+}) => {
+  const statusOptions = [
+    { value: 'Belum Diberi', label: 'Belum Diberi', color: 'bg-red-100', textColor: 'text-red-800' },
+    { value: 'Sudah Diberi', label: 'Sudah Diberi', color: 'bg-green-100', textColor: 'text-green-800' },
+  ] as const;
+
+  return (
+    <View className="mb-4">
+      <Text className="text-base font-semibold text-gray-800 mb-2">Status Pakan:</Text>
+      <View className="flex-row flex-wrap gap-2">
+        {statusOptions.map((option) => (
+          <TouchableOpacity
+            key={option.value}
+            className={`px-4 py-2 rounded-full ${option.color} ${
+              currentStatus === option.value ? 'border-2 border-gray-600' : ''
+            }`}
+            onPress={() => onStatusChange(option.value)}
+          >
+            <Text className={`${option.textColor} font-medium`}>
+              {option.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
+
 export default function EditAnimalDetail() {
   const router = useRouter();
   const { satwaId } = useLocalSearchParams<{ satwaId: string }>();
@@ -52,6 +86,10 @@ export default function EditAnimalDetail() {
     }
   };
 
+  const handleStatusPakanChange = (newStatus: 'Belum Diberi' | 'Sudah Diberi') => {
+    setFormData(prev => ({ ...prev, status_pakan: newStatus }));
+  };
+
   const handleSave = async () => {
     if (!satwaId) return;
     setIsSaving(true);
@@ -60,7 +98,7 @@ export default function EditAnimalDetail() {
     try {
       let imageUrl = formData.image_url;
       if (imageUri && imageUri !== formData.image_url) {
-        imageUrl = imageUrl = await uploadImage(imageUri);
+        imageUrl = await uploadImage(imageUri);
       }
 
       const { created_at, id, ...updateData } = formData;
@@ -86,10 +124,40 @@ export default function EditAnimalDetail() {
           "Error",
           "Gagal menyimpan perubahan: " + updateError.message
         );
-      } else {
-        Alert.alert("Sukses", "Data satwa berhasil diperbarui.");
-        router.back();
+        return;
       }
+
+      // If status_pakan was updated, also update kandang status
+      if (formData.status_pakan !== singleSatwa?.status_pakan && singleSatwa?.kandang_id) {
+        try {
+          // Get all animals in the same kandang to determine kandang status
+          const { data: allAnimalsInKandang, error: fetchError } = await supabase
+            .from('satwa')
+            .select('status_pakan')
+            .eq('kandang_id', singleSatwa.kandang_id);
+
+          if (!fetchError && allAnimalsInKandang) {
+            // Determine kandang status: only "Sudah Diberi" if ALL animals are fed
+            const allFed = allAnimalsInKandang.every(a => a.status_pakan === 'Sudah Diberi');
+            const kandangStatus = allFed ? 'Sudah Diberi' : 'Belum Diberi';
+
+            // Update kandang status
+            await supabase
+              .from('kandang')
+              .update({ status_pakan: kandangStatus })
+              .eq('id', singleSatwa.kandang_id);
+          }
+        } catch (kandangError) {
+          console.log('Warning: Could not update kandang status:', kandangError);
+        }
+      }
+
+      Alert.alert("Sukses", "Data satwa berhasil diperbarui.", [
+        {
+          text: "OK",
+          onPress: () => router.back()
+        }
+      ]);
     } catch (err: any) {
       Alert.alert("Error", err.message);
     } finally {
@@ -179,6 +247,17 @@ export default function EditAnimalDetail() {
           </TouchableOpacity>
         </View>
 
+        {/* --- Status Pakan Selector --- */}
+        <View className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <Text className="text-lg font-bold text-yellow-900 mb-3">
+            Status Pakan
+          </Text>
+          <StatusPakanSelector 
+            currentStatus={formData.status_pakan || 'Belum Diberi'}
+            onStatusChange={handleStatusPakanChange}
+          />
+        </View>
+
         <View className="mb-6">
           <Text className="text-lg font-bold text-yellow-900 mb-3">
             Data Lengkap Satwa
@@ -200,13 +279,24 @@ export default function EditAnimalDetail() {
         </View>
 
         {/* --- Bagian Catatan Harian & Medis --- */}
-        {/* Catatan: Mengedit status pakan & riwayat medis biasanya punya halaman/logika sendiri */}
         <View className="mb-6">
           <Text className="text-lg font-bold text-yellow-900 mb-3">
             Status & Riwayat (Read-only)
           </Text>
-          {/* Tampilkan data ini sebagai info, bukan untuk diedit di sini */}
-          <DataRow label="Status Pakan Hari Ini" value={"Belum Ada Catatan"} />
+          <DataRow 
+            label="Status Pakan Saat Ini" 
+            value={
+              <View className={`px-2 py-1 rounded-full ${
+                formData.status_pakan === 'Sudah Diberi' ? 'bg-green-100' : 'bg-red-100'
+              }`}>
+                <Text className={`text-xs font-medium ${
+                  formData.status_pakan === 'Sudah Diberi' ? 'text-green-800' : 'text-red-800'
+                }`}>
+                  {formData.status_pakan || 'Belum Diberi'}
+                </Text>
+              </View>
+            }
+          />
           <DataRow
             label="Riwayat Medis Terakhir"
             value={"Vaksinasi Rabies (2020-03-11)"}
@@ -235,10 +325,16 @@ const DataRow = ({
   value,
 }: {
   label: string;
-  value: string | number;
+  value: string | number | React.ReactNode;
 }) => (
   <View className="bg-yellow-100 rounded-lg py-3 px-4 mb-2 flex-row justify-between items-center">
     <Text className="text-sm font-semibold text-gray-800">{label}</Text>
-    <Text className="text-sm text-gray-900 text-right">{value}</Text>
+    <View className="text-sm text-gray-900 text-right">
+      {typeof value === 'string' || typeof value === 'number' ? (
+        <Text className="text-sm text-gray-900 text-right">{value}</Text>
+      ) : (
+        value
+      )}
+    </View>
   </View>
 );

@@ -4,5 +4,6 @@ export interface Kandang {
   nama_kandang: string;
   lokasi: string | null;
   latitude: number;
-  longitude: number; 
+  longitude: number;
+  status_pakan: "Belum Diberi" | "Sudah Diberi";
 }

@@ -18,11 +18,17 @@ const DataRow = ({
   value,
 }: {
   label: string;
-  value?: string | number | null;
+  value?: string | number | null | React.ReactNode;
 }) => (
   <View className="bg-yellow-100 rounded-lg py-3 px-4 mb-2 flex-row justify-between items-center">
     <Text className="text-sm font-semibold text-gray-800">{label}</Text>
-    <Text className="text-sm text-gray-900 text-right">{value || "N/A"}</Text>
+    <View className="text-sm text-gray-900 text-right">
+      {typeof value === 'string' || typeof value === 'number' ? (
+        <Text className="text-sm text-gray-900 text-right">{value || "N/A"}</Text>
+      ) : (
+        value || <Text className="text-sm text-gray-900 text-right">N/A</Text>
+      )}
+    </View>
   </View>
 );
 
@@ -110,7 +116,20 @@ export default function AnimalDetail() {
           </Text>
           <DataRow label="Jenis Makanan" value={animal.jenis_makanan} />
           <DataRow label="Porsi Harian" value={animal.porsi_harian} />
-          {/* Status pakan harian DIHAPUS dari sini */}
+          <DataRow 
+            label="Status Pakan" 
+            value={
+              <View className={`px-3 py-1 rounded-full ${
+                animal.status_pakan === 'Sudah Diberi' ? 'bg-green-100' : 'bg-red-100'
+              }`}>
+                <Text className={`text-xs font-medium ${
+                  animal.status_pakan === 'Sudah Diberi' ? 'text-green-800' : 'text-red-800'
+                }`}>
+                  {animal.status_pakan || 'Belum Diberi'}
+                </Text>
+              </View>
+            } 
+          />
         </View>
 
         {/* --- Bagian Riwayat Medis (Tetap sebagai placeholder) --- */}
