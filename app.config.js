@@ -29,6 +29,10 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.yourcompany.zoomate",
+      infoPlist: {
+        NSCameraUsageDescription:
+          "Aplikasi ini memerlukan akses kamera untuk memindai QR code kandang dan satwa.",
+      },
     },
 
     android: {
@@ -37,6 +41,7 @@ export default {
         backgroundColor: "#ffffff",
       },
       package: "com.torikh42.zoomate",
+      permissions: ["CAMERA"],
     },
 
     web: {
