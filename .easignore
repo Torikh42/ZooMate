@@ -1,0 +1,49 @@
+# node modules & cache
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.expo
+.expo-shared
+dist
+build
+tmp
+temp
+
+# editor & system
+.DS_Store
+Thumbs.db
+*.iml
+.idea
+.vscode
+
+# android & ios build outputs
+android/build
+android/app/build
+ios/build
+ios/Pods
+
+# test, docs, assets berat
+__tests__/
+tests/
+coverage/
+docs/
+*.md
+
+# jangan kirim gambar/video dummy atau sample besar
+*.psd
+*.ai
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.zip
+*.rar
+*.tar
+*.gz
+*.7z
+
+# environment
+.env
+*.env.local
+*.env.*.local
