@@ -14,9 +14,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Satwa } from "../../types/satwa";
 import { uploadImage } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
+import QRCodePopup from "@/components/ui/QRCodePopup";
 
 export default function AddAnimal() {
   const { kandangId, kandangName } = useLocalSearchParams();
@@ -34,6 +34,9 @@ export default function AddAnimal() {
   const [porsiHarian, setPorsiHarian] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [newQrValue, setNewQrValue] = useState("");
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -67,24 +70,32 @@ export default function AddAnimal() {
         imageUrl = await uploadImage(imageUri);
       }
 
-      const { error } = await supabase.from("satwa").insert({
-        kandang_id: kandangId as string,
-        nama_satwa: namaSatwa,
-        spesies: spesies,
-        tanggal_lahir: tanggalLahir.toISOString().split("T")[0],
-        jenis_kelamin: jenisKelamin,
-        berat_badan: beratBadan ? parseFloat(beratBadan) : null,
-        tinggi_badan: tinggiBadan ? parseFloat(tinggiBadan) : null,
-        jenis_makanan: jenisMakanan || null,
-        porsi_harian: porsiHarian || null,
-        image_url: imageUrl,
-      } as Omit<Satwa, "id" | "created_at">);
+      const { data, error } = await supabase
+        .from("satwa")
+        .insert({
+          kandang_id: kandangId as string,
+          nama_satwa: namaSatwa,
+          spesies: spesies,
+          tanggal_lahir: tanggalLahir.toISOString().split("T")[0],
+          jenis_kelamin: jenisKelamin,
+          berat_badan: beratBadan ? parseFloat(beratBadan) : null,
+          tinggi_badan: tinggiBadan ? parseFloat(tinggiBadan) : null,
+          jenis_makanan: jenisMakanan || null,
+          porsi_harian: porsiHarian || null,
+          image_url: imageUrl,
+          status_pakan: "Belum Diberi", // default status awal
+        })
+        .select()
+        .single();
 
       if (error) {
-        Alert.alert("Error", error.message);
-      } else {
-        Alert.alert("Sukses", "Satwa berhasil ditambahkan!");
-        router.back(); // Navigate back to animalList.tsx
+        throw error;
+      }
+
+      if (data) {
+        // Set QR value dan tampilkan pop-up
+        setNewQrValue(`zoomate://satwa/${data.id}`);
+        setPopupVisible(true);
       }
     } catch (err: any) {
       Alert.alert("Error", err.message);
@@ -326,6 +337,16 @@ export default function AddAnimal() {
           {loading ? "Menambahkan..." : "Tambah Satwa"}
         </Text>
       </TouchableOpacity>
+
+      <QRCodePopup
+        visible={isPopupVisible}
+        onClose={() => {
+          setPopupVisible(false);
+          router.back(); // Arahkan kembali setelah pop-up ditutup
+        }}
+        qrValue={newQrValue}
+        title="Satwa Berhasil Ditambahkan"
+      />
     </ScrollView>
   );
 }
