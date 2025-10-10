@@ -6,7 +6,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 type Props = {
   title: string;
-  backTo?: string; // opsional: fallback jika router.back() gagal
+  backTo?: string; 
 };
 
 export default function HeaderTop({ title }: Props) {

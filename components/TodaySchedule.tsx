@@ -3,15 +3,13 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import colors from "../constants/Colors";
-import { useTasks } from "../context/TaskContext"; // Impor hook baru
+import { useTasks } from "../context/TaskContext"; 
 
 export default function TodaySchedule() {
   const router = useRouter();
-  // Gunakan hook dari context untuk mendapat data terpusat
   const { tasks, loading, updateTaskStatus } = useTasks();
 
   if (loading) {
-    // ... Tampilan loading tidak berubah
     return (
       <View>
         <ActivityIndicator />
@@ -19,7 +17,6 @@ export default function TodaySchedule() {
     );
   }
 
-  // Ambil 3 tugas pertama untuk ditampilkan
   const topThreeTasks = tasks?.slice(0, 3) || [];
 
   return (
@@ -76,7 +73,7 @@ export default function TodaySchedule() {
           style={{ backgroundColor: colors.yellow.darker }}
           activeOpacity={0.9}
           className="mt-1 py-2 rounded-lg items-center"
-          onPress={() => router.push("/(untabs)/schedule")} // Arahkan ke halaman jadwal
+          onPress={() => router.push("/(untabs)/schedule")} 
         >
           <Text className="text-white font-bold">Cek Jadwal Saya</Text>
         </TouchableOpacity>

@@ -51,8 +51,8 @@ export default {
     },
 
     plugins: [
-      "expo-router", // Plugin 1
-      [ // Plugin 2
+      "expo-router", 
+      [ 
         "expo-splash-screen",
         {
           image: "./assets/images/splash-icon.png",
@@ -60,7 +60,7 @@ export default {
           backgroundColor: "#ffffff",
         },
       ],
-      [ // Plugin 3 (yang kita tambahkan)
+      [ 
         "expo-build-properties",
         {
           android: {
@@ -81,7 +81,6 @@ export default {
     },
 
     extra: {
-      // Pastikan semua variabel dari .env terdaftar di sini
       mapsApiKey: process.env.MAPS_API_KEY,
       cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
       cloudinaryUploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET,

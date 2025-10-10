@@ -7,13 +7,12 @@ import { useKandang } from "../../hooks/useKandang";
 const ZooMapScreen = () => {
   const { kandangData, loading, error } = useKandang();
   const [mapRegion, setMapRegion] = useState({
-    latitude: -6.2, // Default: Jakarta latitude
-    longitude: 106.816666, // Default: Jakarta longitude
+    latitude: -6.2, 
+    longitude: 106.816666, 
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
 
-  // Adjust map region based on kandang locations
   useEffect(() => {
     if (kandangData && kandangData.length > 0) {
       const validKandang = kandangData.filter((k) => k.latitude && k.longitude);
@@ -45,10 +44,10 @@ const ZooMapScreen = () => {
   const getMarkerColor = (status: string) => {
     switch (status) {
       case "Sudah Diberi":
-        return "#22c55e"; // Green
+        return "#22c55e"; 
       case "Belum Diberi":
       default:
-        return "#ef4444"; // Red
+        return "#ef4444";
     }
   };
 

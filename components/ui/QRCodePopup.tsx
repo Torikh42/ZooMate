@@ -34,15 +34,12 @@ export default function QRCodePopup({
       return;
     }
 
-    // Mengubah SVG menjadi data base64
     qrCodeRef.toDataURL(async (data: string) => {
       const path = FileSystem.cacheDirectory + "qrcode.png";
       try {
-        // Menulis data base64 sebagai file PNG
         await FileSystem.writeAsStringAsync(path, data, {
           encoding: FileSystem.EncodingType.Base64,
         });
-        // Membagikan file yang sudah dibuat
         await Sharing.shareAsync("file://" + path, {
           mimeType: "image/png",
           dialogTitle: "Bagikan atau Simpan Kode QR",

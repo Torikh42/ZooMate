@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { useSatwa } from "../../hooks/useSatwa";
 
-// Komponen helper bisa tetap di sini atau dipindah ke file terpisah
 const DataRow = ({
   label,
   value,
@@ -39,7 +38,6 @@ export default function AnimalDetail() {
     satwaName?: string;
   }>();
 
-  // Hanya perlu mengambil data satwa, tidak perlu catatan harian
   const { singleSatwa: animal, loading, error } = useSatwa(undefined, satwaId);
 
   if (loading) {
@@ -132,7 +130,6 @@ export default function AnimalDetail() {
           />
         </View>
 
-        {/* --- Bagian Riwayat Medis (Tetap sebagai placeholder) --- */}
         <View className="mb-6">
           <Text className="text-xl font-bold text-yellow-900 mb-3">
             Riwayat Medis

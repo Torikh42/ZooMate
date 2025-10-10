@@ -69,7 +69,6 @@ const KandangStatusToggle = ({
   ) => {
     setUpdating(true);
     try {
-      // Update all animals in this kandang
       const { error: satwaError } = await supabase
         .from("satwa")
         .update({ status_pakan: newStatus })
@@ -77,7 +76,6 @@ const KandangStatusToggle = ({
 
       if (satwaError) throw satwaError;
 
-      // Update kandang status
       const { error: kandangError } = await supabase
         .from("kandang")
         .update({ status_pakan: newStatus })

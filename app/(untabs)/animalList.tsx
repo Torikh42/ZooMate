@@ -18,8 +18,6 @@ export default function AnimalList() {
     kandangId: string;
     kandangName?: string;
   }>();
-
-  // FIX 1: Ambil 'satwaList' dari hook, bukan 'satwaData'
   const { satwaList, loading, error } = useSatwa(kandangId);
   const { profile } = useAuth();
 
@@ -47,9 +45,6 @@ export default function AnimalList() {
     <View className="flex-1 bg-white">
       <ScrollView className="flex-1 p-4 pt-6 mt-5">
         <HeaderTop title={`Satwa di ${kandangName || "Kandang"}`} />
-        {/* Anda bisa menambahkan SearchBar di sini nanti jika perlu */}
-
-        {/* FIX 2: Cek jika satwaList ada dan panjangnya 0 */}
         {!satwaList || satwaList.length === 0 ? (
           <Text className="text-center mt-10 text-gray-500">
             Tidak ada satwa di kandang ini.
@@ -62,7 +57,7 @@ export default function AnimalList() {
               status={satwa.spesies}
               onPress={() => {
                 router.push({
-                  pathname: "/(untabs)/animalDetail", // Pastikan path ini benar
+                  pathname: "/(untabs)/animalDetail",
                   params: { satwaId: satwa.id, satwaName: satwa.nama_satwa },
                 });
               }}
@@ -71,13 +66,12 @@ export default function AnimalList() {
         )}
       </ScrollView>
 
-      {/* Tombol Tambah Satwa (Floating Action Button) */}
       {canAddAnimal && (
         <TouchableOpacity
           className="absolute right-6 bottom-6 bg-yellow-300 rounded-full p-4 shadow-lg"
           onPress={() =>
             router.push({
-              pathname: "/(untabs)/addAnimal", // Pastikan path ini benar
+              pathname: "/(untabs)/addAnimal", 
               params: { kandangId: kandangId, kandangName: kandangName },
             })
           }

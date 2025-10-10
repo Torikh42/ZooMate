@@ -1,4 +1,3 @@
-// useSatwa.ts
 import { useCallback, useEffect, useState } from "react";
 import { Satwa } from "../types/satwa";
 import { supabase } from "../utils/supabase";
@@ -10,7 +9,7 @@ export const useSatwa = (kandangId?: string, satwaId?: string) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchSatwa = useCallback(async () => {
-    let isMounted = true; // Re-initialize isMounted for each refetch
+    let isMounted = true; 
 
     setLoading(true);
     setError(null);
@@ -29,7 +28,7 @@ export const useSatwa = (kandangId?: string, satwaId?: string) => {
         } else {
           setSingleSatwa(data as Satwa);
         }
-        setSatwaList(null); // Ensure list is null when fetching single
+        setSatwaList(null); 
       }
     } else if (kandangId) {
       const { data, error } = await supabase
@@ -44,7 +43,7 @@ export const useSatwa = (kandangId?: string, satwaId?: string) => {
         } else {
           setSatwaList(data as Satwa[]);
         }
-        setSingleSatwa(null); // Ensure single is null when fetching list
+        setSingleSatwa(null); 
       }
     } else {
       setSatwaList(null);
@@ -54,11 +53,11 @@ export const useSatwa = (kandangId?: string, satwaId?: string) => {
     if (isMounted) {
       setLoading(false);
     }
-  }, [kandangId, satwaId]); // Dependencies for useCallback
+  }, [kandangId, satwaId]); 
 
   useEffect(() => {
     fetchSatwa();
-  }, [fetchSatwa]); // Dependency on fetchSatwa
+  }, [fetchSatwa]); 
 
   return { satwaList, singleSatwa, loading, error, refetch: fetchSatwa };
 };
