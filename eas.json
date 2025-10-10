@@ -6,10 +6,7 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk"
-      }
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal",
@@ -18,9 +15,17 @@
       }
     },
     "production": {
+      "environment": "production",
       "autoIncrement": true,
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "${secret:EXPO_PUBLIC_SUPABASE_URL}",
+        "EXPO_PUBLIC_SUPABASE_KEY": "${secret:EXPO_PUBLIC_SUPABASE_KEY}",
+        "MAPS_API_KEY": "${secret:MAPS_API_KEY}",
+        "CLOUDINARY_CLOUD_NAME": "${secret:CLOUDINARY_CLOUD_NAME}",
+        "CLOUDINARY_UPLOAD_PRESET": "${secret:CLOUDINARY_UPLOAD_PRESET}"
       }
     }
   },
