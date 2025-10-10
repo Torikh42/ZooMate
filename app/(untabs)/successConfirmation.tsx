@@ -9,18 +9,13 @@ export default function SuccessConfirmation() {
 
   return (
     <View className="flex-1 bg-white items-center justify-center px-6">
-      {/* Ikon centang */}
       <View className="bg-green-200 p-6 rounded-full mb-6">
         <AntDesign name="checkcircle" size={64} color={colors.greenSoft} />
       </View>
-
-      {/* Teks konfirmasi */}
       <Text className="text-2xl font-bold text-green-500 mb-2">Berhasil!</Text>
       <Text className="text-base text-gray-500 text-center mb-8">
         Data Satwa Hari Ini Sudah di Update!
       </Text>
-
-      {/* Tombol kembali */}
       <TouchableOpacity
         className="bg-yellow-200 py-3 px-8 rounded-lg shadow"
         onPress={() => router.replace("../(tabs)")}

@@ -83,7 +83,7 @@ export default function AddAnimal() {
           jenis_makanan: jenisMakanan || null,
           porsi_harian: porsiHarian || null,
           image_url: imageUrl,
-          status_pakan: "Belum Diberi", // default status awal
+          status_pakan: "Belum Diberi",
         })
         .select()
         .single();
@@ -93,7 +93,6 @@ export default function AddAnimal() {
       }
 
       if (data) {
-        // Set QR value dan tampilkan pop-up
         setNewQrValue(`zoomate://satwa/${data.id}`);
         setPopupVisible(true);
       }
@@ -342,7 +341,7 @@ export default function AddAnimal() {
         visible={isPopupVisible}
         onClose={() => {
           setPopupVisible(false);
-          router.back(); // Arahkan kembali setelah pop-up ditutup
+          router.back(); 
         }}
         qrValue={newQrValue}
         title="Satwa Berhasil Ditambahkan"

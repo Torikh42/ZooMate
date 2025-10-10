@@ -16,10 +16,8 @@ import {
 } from "react-native";
 import { supabase } from "../../utils/supabase";
 
-// Opsi jenis tugas
 const taskTypes = ["Pakan", "Kebersihan", "Observasi", "Medis", "Lainnya"];
 
-// Daftar rentang waktu yang bisa dipilih
 const timeSlots = [
   "08:00 - 09:00",
   "09:00 - 10:00",
@@ -30,13 +28,11 @@ const timeSlots = [
   "15:00 - 16:00",
 ];
 
-// Tipe data untuk item di dalam dropdown
 interface DropdownItem {
   id: string;
   name: string;
 }
 
-// Tipe data untuk props komponen DropdownSelector
 interface DropdownSelectorProps {
   label: string;
   items: DropdownItem[];
@@ -45,7 +41,6 @@ interface DropdownSelectorProps {
   placeholder: string;
 }
 
-// Komponen dropdown yang dibuat reusable
 const DropdownSelector = ({
   label,
   items,

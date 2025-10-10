@@ -12,8 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Komponen untuk menampilkan satu item tugas
 const TaskItem = ({
   task,
   onUpdateStatus,
@@ -71,21 +69,16 @@ const TaskItem = ({
   );
 };
 
-// Komponen utama halaman Jadwal
 export default function Schedule() {
   const router = useRouter();
-  // Mengambil semua data dan fungsi dari TaskContext
   const { tasks, loading, error, refetchTasks, updateTaskStatus } = useTasks();
   const [refreshing, setRefreshing] = useState(false);
-
-  // Fungsi untuk fitur pull-to-refresh
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refetchTasks();
     setRefreshing(false);
   }, [refetchTasks]);
 
-  // Tampilan saat loading awal
   if (loading) {
     return (
       <ActivityIndicator
@@ -96,7 +89,6 @@ export default function Schedule() {
     );
   }
 
-  // Tampilan jika ada error
   if (error) {
     return (
       <View className="flex-1 justify-center items-center p-4">
@@ -139,7 +131,7 @@ export default function Schedule() {
 
       <TouchableOpacity
         className="absolute right-6 bottom-6 bg-yellow-300 rounded-full p-4 shadow-lg"
-        onPress={() => router.push("/(untabs)/addSchedule")} // Pastikan path ini benar
+        onPress={() => router.push("/(untabs)/addSchedule")} 
       >
         <MaterialIcons name="add" size={32} color={colors.yellow.darker} />
       </TouchableOpacity>

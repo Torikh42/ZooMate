@@ -73,7 +73,6 @@ export default function AddKandang() {
     >
       <HeaderTop title="Tambah Kandang Baru" />
 
-      {/* Input Nama */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -93,8 +92,6 @@ export default function AddKandang() {
           onChangeText={setNamaKandang}
         />
       </View>
-
-      {/* Input Lokasi */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -115,7 +112,6 @@ export default function AddKandang() {
         />
       </View>
 
-      {/* Input Latitude */}
       <View className="mb-4">
         <Text
           className="text-lg font-semibold mb-2"
@@ -137,7 +133,6 @@ export default function AddKandang() {
         />
       </View>
 
-      {/* Input Longitude */}
       <View className="mb-6">
         <Text
           className="text-lg font-semibold mb-2"
@@ -159,7 +154,6 @@ export default function AddKandang() {
         />
       </View>
 
-      {/* Tombol Simpan */}
       <TouchableOpacity
         style={{ backgroundColor: colors.yellow.darker }}
         className="bg-yellow-800 py-3 rounded-lg items-center mt-3"
@@ -171,7 +165,6 @@ export default function AddKandang() {
         </Text>
       </TouchableOpacity>
 
-      {/* Popup QRCode */}
       <Modal
         visible={isPopupVisible}
         transparent

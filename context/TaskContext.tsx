@@ -3,14 +3,12 @@ import { supabase } from "@/utils/supabase";
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { Alert } from "react-native";
 
-// Tipe data gabungan untuk tugas beserta data kandang terkait
 export interface TaskWithKandang extends CatatanHarian {
   kandang: {
     nama_kandang: string;
   } | null;
 }
 
-// Tipe untuk nilai yang disediakan oleh context
 interface TaskContextType {
   tasks: TaskWithKandang[];
   loading: boolean;
@@ -27,7 +25,6 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchTasks = useCallback(async () => {
-    // Tidak set loading ke true di sini agar refresh lebih mulus
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
     const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
@@ -55,24 +52,21 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   
   const updateTaskStatus = async (taskId: string, currentStatus: string) => {
     const newStatus = currentStatus === "Selesai" ? "Belum" : "Selesai";
-    
-    // Optimistic Update: langsung ubah state di UI
+
     setTasks(currentTasks => 
       currentTasks.map(task => 
         task.id === taskId ? { ...task, status_tugas: newStatus } : task
       )
     );
 
-    // Kirim perubahan ke database di background
     const { error } = await supabase
       .from("catatan_harian")
       .update({ status_tugas: newStatus })
       .eq("id", taskId);
-    
-    // Jika gagal, kembalikan state ke semula dan tampilkan error
+
     if (error) {
       Alert.alert("Error", "Gagal memperbarui status. Perubahan dibatalkan.");
-      fetchTasks(); // Ambil data lagi dari server untuk sinkronisasi
+      fetchTasks(); 
     }
   };
 

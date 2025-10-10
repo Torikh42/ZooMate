@@ -1,4 +1,3 @@
-// useKandang.ts
 import { useCallback, useEffect, useState } from "react";
 import { Kandang } from "../types/kandang";
 import { supabase } from "../utils/supabase";
